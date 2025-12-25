@@ -47,10 +47,11 @@
                     <h2 id="formTitle" class="text-lg font-bold text-gray-700 flex items-center gap-2">
                         <i class="ph-bold ph-plus-circle text-green-600"></i> Add New App
                     </h2>
-                    <button type="button" onclick="resetForm()" class="text-xs text-gray-400 hover:text-gray-600">Reset Form</button>
+                    <button type="button" onclick="resetForm()" class="text-xs text-blue-600 font-bold hover:underline">Create New</button>
                 </div>
                 
                 <form id="uploadForm" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
                     <div class="space-y-3">
                         <h3 class="text-xs font-bold text-gray-400 uppercase">Basic Info</h3>
                         <div><label class="label">App Name</label><input type="text" id="appName" class="input-field" required></div>
@@ -132,10 +133,10 @@
                     <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
                         <i class="ph-bold ph-list-dashes text-blue-600"></i> App Library
                     </h3>
-                    <span class="text-xs text-gray-500 bg-white border px-2 py-1 rounded">Apps List</span>
+                    <span class="text-xs text-gray-500 bg-white border px-2 py-1 rounded shadow-sm">Manage Apps</span>
                 </div>
                 
-                <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[600px] overflow-y-auto min-h-[100px]">
+                <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
                     <li class="p-6 text-center text-gray-400 text-sm">Loading apps...</li>
                 </ul>
             </div>
