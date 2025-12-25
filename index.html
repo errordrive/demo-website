@@ -12,7 +12,7 @@
         .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .submenu.open { max-height: 500px; }
         
-        /* Smooth Slider */
+        /* Smooth Slider CSS */
         .slider-track { display: flex; transition: transform 0.5s ease-out; height: 100%; touch-action: pan-y; }
         .slide { min-width: 100%; height: 100%; position: relative; }
         .slide img { width: 100%; height: 100%; object-fit: cover; }
@@ -84,7 +84,7 @@
 
     <main class="max-w-7xl mx-auto px-4 pb-12 flex-1 w-full">
         
-        <div class="mt-6 mb-8 relative rounded-2xl md:rounded-3xl overflow-hidden shadow-xl h-48 md:h-80 group">
+        <div class="mt-6 mb-8 relative rounded-2xl md:rounded-3xl overflow-hidden shadow-xl h-48 md:h-80 group bg-gray-200">
             <div id="heroSlider" class="slider-track">
                 </div>
             <div id="sliderDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10"></div>
@@ -105,17 +105,17 @@
             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
                 <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-shield-check"></i></div>
                 <h3 class="font-bold text-gray-900 mb-2">Safe & Secure</h3>
-                <p class="text-xs text-gray-500 leading-relaxed">Every APK file is manually verified for safety.</p>
+                <p class="text-xs text-gray-500 leading-relaxed">Verified uploads for malware-free experience.</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
                 <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-lightning"></i></div>
                 <h3 class="font-bold text-gray-900 mb-2">Fast Downloads</h3>
-                <p class="text-xs text-gray-500 leading-relaxed">Optimized servers for the fastest download speeds.</p>
+                <p class="text-xs text-gray-500 leading-relaxed">High-speed servers for instant access.</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
                 <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-globe"></i></div>
                 <h3 class="font-bold text-gray-900 mb-2">Global Access</h3>
-                <p class="text-xs text-gray-500 leading-relaxed">No geo-restrictions on any app or game.</p>
+                <p class="text-xs text-gray-500 leading-relaxed">No region locks on any apps or games.</p>
             </div>
         </section>
     </main>
@@ -126,7 +126,6 @@
         import { loadApps, initSlider } from './app.js';
         let currentCat = 'All';
         
-        // Listeners handled in app.js init
         let timeout = null;
         document.getElementById('searchInput').addEventListener('input', (e) => {
             clearTimeout(timeout);
