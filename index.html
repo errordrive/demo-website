@@ -3,79 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APKVerse - Home</title>
+    <title>APKVerse - Secure APK Downloads</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; } 
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Dropdown Animation */
+        .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .submenu.open { max-height: 500px; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
 
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            
             <div class="flex items-center gap-4">
                 <button onclick="toggleMenu()" class="text-gray-600 hover:text-green-600 transition text-2xl">
                     <i class="ph-bold ph-list"></i>
                 </button>
-
                 <a href="index.html" class="flex items-center gap-2 cursor-pointer select-none">
                     <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-xl shadow-lg"><i class="ph-fill ph-android-logo"></i></div>
                     <span class="text-lg font-bold tracking-tight">APK<span class="text-green-600">Verse</span></span>
                 </a>
             </div>
-
             <a href="admin.html" class="text-[10px] font-bold text-gray-500 hover:text-green-600 uppercase tracking-widest border border-gray-200 px-3 py-1 rounded-full transition">Admin</a>
         </div>
     </nav>
 
     <div id="sideMenuOverlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity opacity-0"></div>
-    <div id="sideMenu" class="fixed top-0 left-0 h-full w-72 bg-white z-[60] transform -translate-x-full transition-transform duration-300 shadow-2xl overflow-y-auto">
-        <div class="p-5 border-b border-gray-100 flex justify-between items-center">
-            <span class="text-xl font-bold text-gray-800">Menu</span>
+    <div id="sideMenu" class="fixed top-0 left-0 h-full w-80 bg-white z-[60] transform -translate-x-full transition-transform duration-300 shadow-2xl overflow-y-auto">
+        <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+            <span class="text-lg font-extrabold text-gray-800">Menu</span>
             <button onclick="toggleMenu()" class="text-gray-500 hover:text-red-500 text-xl"><i class="ph-bold ph-x"></i></button>
         </div>
-        <div class="p-4 space-y-6">
+
+        <div class="p-4 space-y-2">
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-green-600 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-house text-lg"></i> Home
+            </a>
+
             <div>
-                <h4 class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">Discover</h4>
-                <ul class="space-y-2 text-sm font-medium text-gray-600">
-                    <li><a href="index.html" class="flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-house"></i> Home</a></li>
-                </ul>
+                <button onclick="toggleSubMenu('appsSub')" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition group">
+                    <span class="flex items-center gap-3"><i class="ph-bold ph-squares-four text-lg"></i> Apps</span>
+                    <i id="icon-appsSub" class="ph-bold ph-caret-down transition-transform duration-300 group-hover:text-green-600"></i>
+                </button>
+                <div id="appsSub" class="submenu pl-11 space-y-1">
+                    <button onclick="filterCategory('Social'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Social</button>
+                    <button onclick="filterCategory('Tools'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Tools</button>
+                    <button onclick="filterCategory('Productivity'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Productivity</button>
+                    <button onclick="filterCategory('Communication'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Communication</button>
+                    <button onclick="filterCategory('Video Players'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Video Players</button>
+                </div>
             </div>
+
             <div>
-                <h4 class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">Categories</h4>
-                <ul class="space-y-2 text-sm font-medium text-gray-600">
-                    <li><button onclick="filterCategory('Games'); toggleMenu()" class="w-full text-left flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-game-controller"></i> Games</button></li>
-                    <li><button onclick="filterCategory('Social'); toggleMenu()" class="w-full text-left flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-users"></i> Social</button></li>
-                    <li><button onclick="filterCategory('Tools'); toggleMenu()" class="w-full text-left flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-wrench"></i> Tools</button></li>
-                </ul>
+                <button onclick="toggleSubMenu('gamesSub')" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition group">
+                    <span class="flex items-center gap-3"><i class="ph-bold ph-game-controller text-lg"></i> Games</span>
+                    <i id="icon-gamesSub" class="ph-bold ph-caret-down transition-transform duration-300 group-hover:text-green-600"></i>
+                </button>
+                <div id="gamesSub" class="submenu pl-11 space-y-1">
+                    <button onclick="filterCategory('Action'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Action</button>
+                    <button onclick="filterCategory('Arcade'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Arcade</button>
+                    <button onclick="filterCategory('Racing'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Racing</button>
+                    <button onclick="filterCategory('Simulation'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Simulation</button>
+                </div>
             </div>
-            <div>
-                <h4 class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">Information</h4>
-                <ul class="space-y-2 text-sm font-medium text-gray-600">
-                    <li><a href="legal.html?page=about" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-info"></i> About Us</a></li>
-                    <li><a href="legal.html?page=contact" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-envelope"></i> Contact Us</a></li>
-                    <li><a href="legal.html?page=privacy" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-shield"></i> Privacy Policy</a></li>
-                </ul>
-            </div>
+
+            <div class="border-t border-gray-100 my-4"></div>
+
+            <a href="legal.html?page=dmca" class="flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 hover:text-red-600 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-warning-circle text-lg"></i> DMCA Policy
+            </a>
+            <a href="legal.html?page=contact" class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-envelope text-lg"></i> Contact Us
+            </a>
         </div>
     </div>
 
-    <div class="bg-gray-900 text-white py-8 px-4 relative overflow-hidden">
+    <div class="bg-gray-900 text-white py-10 px-4 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-green-500 rounded-full blur-[100px] opacity-20"></div>
         <div class="max-w-2xl mx-auto text-center relative z-10">
-            <h1 class="text-2xl font-bold mb-4">Find Secure <span class="text-green-400">APKs</span></h1>
+            <h1 class="text-3xl font-bold mb-4">Discover & Download</h1>
             <div class="relative w-full">
-                <input type="text" id="searchInput" placeholder="Search apps or games..." 
+                <input type="text" id="searchInput" placeholder="Search for apps..." 
                     class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm">
                 <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
             </div>
         </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
         <div class="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar" id="categoryList">
             <button onclick="filterCategory('All')" class="cat-btn active bg-green-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md whitespace-nowrap">All</button>
             <button onclick="filterCategory('Games')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Games</button>
@@ -84,11 +102,52 @@
         </div>
 
         <div id="loading" class="text-center py-20 hidden"><i class="ph ph-spinner animate-spin text-green-600 text-3xl"></i></div>
-        
-        <div id="appGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4"></div>
+        <div id="appGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5"></div>
     </main>
 
-    <footer class="bg-white border-t border-gray-200 py-6 mt-8 text-center text-xs text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
+    <footer class="bg-white border-t border-gray-200 pt-10 pb-6 mt-10">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-lg shadow"><i class="ph-fill ph-android-logo"></i></div>
+                    <span class="text-lg font-bold">APK<span class="text-green-600">Verse</span></span>
+                </div>
+                <p class="text-xs text-gray-500 leading-relaxed">
+                    APKVerse provides a safe and secure platform to download Android apps and games. All files are verified for safety.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm mb-3">Discovery</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="index.html" class="hover:text-green-600">Home</a></li>
+                        <li><a href="#" onclick="filterCategory('Games')" class="hover:text-green-600">Games</a></li>
+                        <li><a href="#" onclick="filterCategory('Apps')" class="hover:text-green-600">Apps</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm mb-3">Legal</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="legal.html?page=dmca" class="hover:text-red-500">DMCA</a></li>
+                        <li><a href="legal.html?page=privacy" class="hover:text-green-600">Privacy Policy</a></li>
+                        <li><a href="legal.html?page=terms" class="hover:text-green-600">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-gray-900 text-sm mb-3">Contact</h4>
+                <a href="legal.html?page=contact" class="block bg-gray-50 border border-gray-200 text-center py-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-green-50 hover:text-green-600 transition">
+                    Contact Support
+                </a>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 border-t border-gray-100 pt-6 text-center">
+            <p class="text-[10px] text-gray-400">&copy; 2025 APKVerse. All rights reserved. Android is a trademark of Google LLC.</p>
+        </div>
+    </footer>
 
     <script type="module">
         import { loadApps } from './app.js';
@@ -101,6 +160,7 @@
             timeout = setTimeout(() => loadApps(currentCat, e.target.value), 300);
         });
 
+        // 🟢 MENU & ACCORDION LOGIC
         window.toggleMenu = () => {
             const menu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
@@ -112,6 +172,19 @@
                 menu.classList.add('-translate-x-full');
                 overlay.classList.add('opacity-0');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        window.toggleSubMenu = (id) => {
+            const sub = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            
+            if (sub.classList.contains('open')) {
+                sub.classList.remove('open');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                sub.classList.add('open');
+                icon.style.transform = 'rotate(180deg)';
             }
         }
 
