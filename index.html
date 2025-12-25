@@ -12,11 +12,10 @@
         .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .submenu.open { max-height: 500px; }
         
-        /* Slider Animation */
-        .slider-track { display: flex; transition: transform 0.5s ease-in-out; height: 100%; }
+        /* Smooth Slider */
+        .slider-track { display: flex; transition: transform 0.5s ease-out; height: 100%; touch-action: pan-y; }
         .slide { min-width: 100%; height: 100%; position: relative; }
         .slide img { width: 100%; height: 100%; object-fit: cover; }
-        .slide-overlay { background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
@@ -24,7 +23,6 @@
     <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-3">
             <div class="flex flex-wrap items-center justify-between gap-4">
-                
                 <div class="flex items-center gap-3">
                     <button onclick="toggleMenu()" class="text-gray-600 hover:text-green-600 transition text-2xl">
                         <i class="ph-bold ph-list"></i>
@@ -34,7 +32,6 @@
                         <span class="text-lg font-bold tracking-tight hidden md:block">APK<span class="text-green-600">Verse</span></span>
                     </a>
                 </div>
-
                 <div class="flex-1 max-w-lg order-last md:order-none w-full md:w-auto">
                     <div class="relative group">
                         <input type="text" id="searchInput" placeholder="Search apps, games..." 
@@ -42,7 +39,6 @@
                         <i class="ph-bold ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition"></i>
                     </div>
                 </div>
-
                 <a href="admin.html" class="flex items-center gap-1 text-[10px] font-bold text-gray-500 hover:text-green-600 uppercase tracking-widest border border-gray-200 px-3 py-1.5 rounded-full transition whitespace-nowrap">
                     <i class="ph-bold ph-user-gear text-sm"></i> <span class="hidden sm:inline">Admin</span>
                 </a>
@@ -57,7 +53,9 @@
             <button onclick="toggleMenu()" class="text-gray-500 hover:text-red-500 text-xl"><i class="ph-bold ph-x"></i></button>
         </div>
         <div class="p-4 space-y-2">
-            <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-green-600 font-medium text-gray-700 transition"><i class="ph-bold ph-house text-lg"></i> Home</a>
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-green-600 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-house text-lg"></i> Home
+            </a>
             <div>
                 <button onclick="toggleSubMenu('appsSub')" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition group">
                     <span class="flex items-center gap-3"><i class="ph-bold ph-squares-four text-lg"></i> Apps</span>
@@ -68,45 +66,28 @@
                     <button onclick="filterCategory('Tools'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Tools</button>
                 </div>
             </div>
+            <div>
+                <button onclick="toggleSubMenu('gamesSub')" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition group">
+                    <span class="flex items-center gap-3"><i class="ph-bold ph-game-controller text-lg"></i> Games</span>
+                    <i id="icon-gamesSub" class="ph-bold ph-caret-down transition-transform duration-300 group-hover:text-green-600"></i>
+                </button>
+                <div id="gamesSub" class="submenu pl-11 space-y-1">
+                    <button onclick="filterCategory('Action'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Action</button>
+                    <button onclick="filterCategory('Arcade'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Arcade</button>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 my-4"></div>
+            <a href="legal.html?page=dmca" class="flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 hover:text-red-600 font-medium text-gray-700 transition"><i class="ph-bold ph-warning-circle text-lg"></i> DMCA Policy</a>
             <a href="legal.html?page=contact" class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 font-medium text-gray-700 transition"><i class="ph-bold ph-envelope text-lg"></i> Contact Us</a>
         </div>
     </div>
 
     <main class="max-w-7xl mx-auto px-4 pb-12 flex-1 w-full">
         
-        <div class="mt-6 mb-8 relative rounded-3xl overflow-hidden shadow-xl h-48 md:h-80 group">
+        <div class="mt-6 mb-8 relative rounded-2xl md:rounded-3xl overflow-hidden shadow-xl h-48 md:h-80 group">
             <div id="heroSlider" class="slider-track">
-                <div class="slide">
-                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2070" alt="Gaming">
-                    <div class="absolute inset-0 slide-overlay flex flex-col justify-end p-6 md:p-10">
-                        <span class="text-green-400 font-bold tracking-wider text-xs md:text-sm uppercase mb-1">Featured</span>
-                        <h2 class="text-white text-2xl md:text-4xl font-extrabold mb-2">Discover New Games</h2>
-                        <p class="text-gray-300 text-xs md:text-sm max-w-lg">Explore the trending action and rpg games updated daily.</p>
-                    </div>
                 </div>
-                <div class="slide">
-                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=2070" alt="Apps">
-                    <div class="absolute inset-0 slide-overlay flex flex-col justify-end p-6 md:p-10">
-                        <span class="text-blue-400 font-bold tracking-wider text-xs md:text-sm uppercase mb-1">Essential</span>
-                        <h2 class="text-white text-2xl md:text-4xl font-extrabold mb-2">Productivity Tools</h2>
-                        <p class="text-gray-300 text-xs md:text-sm max-w-lg">Boost your workflow with premium utility apps.</p>
-                    </div>
-                </div>
-                <div class="slide">
-                    <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=2070" alt="Updates">
-                    <div class="absolute inset-0 slide-overlay flex flex-col justify-end p-6 md:p-10">
-                        <span class="text-purple-400 font-bold tracking-wider text-xs md:text-sm uppercase mb-1">Updates</span>
-                        <h2 class="text-white text-2xl md:text-4xl font-extrabold mb-2">Latest Versions</h2>
-                        <p class="text-gray-300 text-xs md:text-sm max-w-lg">Get the newest features before everyone else.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="absolute bottom-4 right-4 flex gap-2">
-                <div class="w-2 h-2 rounded-full bg-white/50 active-indicator"></div>
-                <div class="w-2 h-2 rounded-full bg-white/50"></div>
-                <div class="w-2 h-2 rounded-full bg-white/50"></div>
-            </div>
+            <div id="sliderDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10"></div>
         </div>
 
         <div class="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar" id="categoryList">
@@ -121,7 +102,22 @@
         <div id="appGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5 mb-16"></div>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            </section>
+            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-shield-check"></i></div>
+                <h3 class="font-bold text-gray-900 mb-2">Safe & Secure</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">Every APK file is manually verified for safety.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-lightning"></i></div>
+                <h3 class="font-bold text-gray-900 mb-2">Fast Downloads</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">Optimized servers for the fastest download speeds.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-globe"></i></div>
+                <h3 class="font-bold text-gray-900 mb-2">Global Access</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">No geo-restrictions on any app or game.</p>
+            </div>
+        </section>
     </main>
 
     <footer id="main-footer"></footer>
@@ -130,19 +126,13 @@
         import { loadApps, initSlider } from './app.js';
         let currentCat = 'All';
         
-        document.addEventListener('DOMContentLoaded', () => {
-            // Slider চালু করা
-            initSlider();
-        });
-
+        // Listeners handled in app.js init
         let timeout = null;
-        // Search Logic moved to Navbar Input
         document.getElementById('searchInput').addEventListener('input', (e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => loadApps(currentCat, e.target.value), 300);
         });
 
-        // Menu Logic
         window.toggleMenu = () => {
             const menu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
