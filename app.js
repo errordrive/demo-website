@@ -87,8 +87,6 @@ function generateTechHtml(d) {
                 <div class="font-bold text-blue-800 text-xs uppercase mb-1">Build Info</div>
                 ${row('Version Code', d.verCode)}
                 ${row('Release Date', d.date)}
-                ${row('Build Type', d.buildType)}
-                ${row('Build System', d.buildSys)}
                 ${row('Compression', d.compress)}
             </div>
             
@@ -100,9 +98,8 @@ function generateTechHtml(d) {
             </div>
 
             <div>
-                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Architecture & Screen</div>
+                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Architecture & Device</div>
                 <div class="text-xs text-gray-600 mb-1"><span class="font-bold">ABI:</span> ${d.abi}</div>
-                <div class="text-xs text-gray-600 mb-1"><span class="font-bold">DPI:</span> ${d.dpi}</div>
                 ${row('Devices', d.devices)}
             </div>
 
@@ -111,9 +108,8 @@ function generateTechHtml(d) {
                 ${row('Scheme V1', d.v1 ? 'Yes' : 'No')}
                 ${row('Scheme V2', d.v2 ? 'Yes' : 'No')}
                 ${row('Scheme V3', d.v3 ? 'Yes' : 'No')}
-                <div class="mt-1 text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-1 border rounded">
-                    SHA-256: ${d.sha || 'N/A'}
-                </div>
+                <div class="mt-1 text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-1 border rounded mb-1">SHA-1: ${d.sha1 || 'N/A'}</div>
+                <div class="mt-1 text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-1 border rounded">SHA-256: ${d.sha256 || 'N/A'}</div>
             </div>
 
             <div>
@@ -152,7 +148,7 @@ window.openAppModal = async (id) => {
                 <img src="${app.iconUrl}" onerror="this.src='https://via.placeholder.com/100'" class="w-24 h-24 rounded-3xl shadow-md bg-white mx-auto md:mx-0 object-cover">
                 <div class="text-center md:text-left flex-1">
                     <h2 class="text-3xl font-bold text-gray-900">${app.name}</h2>
-                    <p class="text-sm text-green-600 font-bold mb-1">${app.developer}</p>
+                    <p class="text-sm text-green-600 font-bold mb-1">${app.developer} <i class="ph-fill ph-check-circle"></i></p>
                     <p class="text-xs text-gray-400 font-mono mb-3">${app.packageName}</p>
                     <div class="flex justify-center md:justify-start gap-3 text-sm">
                         <span class="bg-gray-100 px-3 py-1 rounded-lg">v${app.version}</span>
@@ -206,7 +202,6 @@ export function initAdmin() {
     if(uploadForm) uploadForm.addEventListener('submit', handleFormSubmit);
 }
 
-// COLLECT DATA FROM 30 FIELDS
 async function handleFormSubmit(e) {
     e.preventDefault();
     const screen = document.getElementById('uploadingScreen');
@@ -215,15 +210,11 @@ async function handleFormSubmit(e) {
     const techData = {
         verCode: document.getElementById('t_verCode').value,
         date: document.getElementById('t_date').value,
-        buildSys: document.getElementById('t_buildSys').value,
-        buildType: document.getElementById('t_buildType').value,
-        variant: document.getElementById('t_variant').value,
         compress: document.getElementById('t_compress').value,
         minSdk: document.getElementById('t_minSdk').value,
         targetSdk: document.getElementById('t_targetSdk').value,
         compileSdk: document.getElementById('t_compileSdk').value,
         abi: document.getElementById('t_abi').value,
-        dpi: document.getElementById('t_dpi').value,
         devices: document.getElementById('t_devices').value,
         multi: document.getElementById('t_multi').value,
         v1: document.getElementById('t_v1').checked,
@@ -231,9 +222,9 @@ async function handleFormSubmit(e) {
         v3: document.getElementById('t_v3').checked,
         v4: document.getElementById('t_v4').checked,
         algo: document.getElementById('t_algo').value,
-        sha: document.getElementById('t_sha').value,
+        sha1: document.getElementById('t_sha1').value, // ADDED
+        sha256: document.getElementById('t_sha256').value,
         issuer: document.getElementById('t_issuer').value,
-        valid: document.getElementById('t_valid').value,
         proguard: document.getElementById('t_proguard').value,
         obfus: document.getElementById('t_obfus').value,
         debug: document.getElementById('t_debug').value,
@@ -250,7 +241,7 @@ async function handleFormSubmit(e) {
         iconUrl: document.getElementById('iconUrl').value,
         apkUrl: document.getElementById('apkUrl').value,
         screenshots: document.getElementById('screenshots').value,
-        techData: techData, // Save object
+        techData: techData,
         updatedAt: serverTimestamp()
     };
     
@@ -324,15 +315,11 @@ window.editApp = async (id) => {
         const t = data.techData || {};
         document.getElementById('t_verCode').value = t.verCode || '';
         document.getElementById('t_date').value = t.date || '';
-        document.getElementById('t_buildSys').value = t.buildSys || '';
-        document.getElementById('t_buildType').value = t.buildType || 'Release';
-        document.getElementById('t_variant').value = t.variant || '';
         document.getElementById('t_compress').value = t.compress || 'Enabled';
         document.getElementById('t_minSdk').value = t.minSdk || '';
         document.getElementById('t_targetSdk').value = t.targetSdk || '';
         document.getElementById('t_compileSdk').value = t.compileSdk || '';
         document.getElementById('t_abi').value = t.abi || '';
-        document.getElementById('t_dpi').value = t.dpi || '';
         document.getElementById('t_devices').value = t.devices || '';
         document.getElementById('t_multi').value = t.multi || '';
         document.getElementById('t_v1').checked = t.v1 || false;
@@ -340,9 +327,9 @@ window.editApp = async (id) => {
         document.getElementById('t_v3').checked = t.v3 || false;
         document.getElementById('t_v4').checked = t.v4 || false;
         document.getElementById('t_algo').value = t.algo || '';
-        document.getElementById('t_sha').value = t.sha || '';
+        document.getElementById('t_sha1').value = t.sha1 || '';
+        document.getElementById('t_sha256').value = t.sha256 || '';
         document.getElementById('t_issuer').value = t.issuer || '';
-        document.getElementById('t_valid').value = t.valid || '';
         document.getElementById('t_proguard').value = t.proguard || 'Enabled';
         document.getElementById('t_obfus').value = t.obfus || 'Enabled';
         document.getElementById('t_debug').value = t.debug || 'False';
