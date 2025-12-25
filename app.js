@@ -15,6 +15,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// Global Variables for Edit Mode
+let isEditMode = false;
+let currentEditId = null;
+
+window.setupAdmin = async () => {
+    try { await createUserWithEmailAndPassword(auth, "admin@admin.com", "admin123"); alert("Admin Created!"); } catch (e) { alert(e.message); }
+};
+
 // ==========================================
 // 1. HOME PAGE LOGIC (Index.html)
 // ==========================================
@@ -48,37 +56,25 @@ export async function loadApps(category = 'All', searchQuery = '') {
     } catch (e) { console.error(e); }
 }
 
-// 🟢 NEW VERTICAL CARD DESIGN (CLICK FIXED)
 function renderAppCard(id, app, container) {
     const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random&size=128`;
 
-    // Added: onclick="window.location.href..." to the main div
-    // Layout: flex-col (Vertical) -> Image Top, Text Bottom
     const card = `
         <div onclick="window.location.href='app-details.html?id=${id}'" class="group bg-white rounded-2xl p-5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 cursor-pointer h-full flex flex-col items-center text-center relative overflow-hidden">
-            
             <div class="absolute inset-0 bg-gradient-to-b from-transparent to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
             <div class="relative z-10 mb-4">
-                <img src="${app.iconUrl}" 
-                     onerror="this.src='${fallbackImage}'" 
-                     alt="${app.name}" 
-                     class="w-24 h-24 rounded-[1.5rem] shadow-sm object-cover bg-white border border-gray-100 group-hover:scale-105 transition-transform duration-300">
+                <img src="${app.iconUrl}" onerror="this.src='${fallbackImage}'" alt="${app.name}" class="w-24 h-24 rounded-[1.5rem] shadow-sm object-cover bg-white border border-gray-100 group-hover:scale-105 transition-transform duration-300">
             </div>
-
             <div class="flex-1 w-full relative z-10 flex flex-col items-center">
                 <h3 class="font-bold text-gray-900 text-lg leading-tight line-clamp-1 group-hover:text-green-600 transition-colors">${app.name}</h3>
-                
                 <p class="text-xs text-gray-500 font-medium mt-1 flex items-center gap-1 justify-center">
                     ${app.developer ? `<i class="ph-fill ph-check-circle text-green-500 text-[10px]"></i> ${app.developer}` : ''}
                 </p>
-                
                 <div class="flex flex-wrap justify-center gap-2 mt-3">
                     <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded uppercase tracking-wider">${app.category}</span>
                     <span class="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider">v${app.version}</span>
                 </div>
             </div>
-
             <div class="mt-5 w-full relative z-10">
                 <button class="w-full flex items-center justify-center gap-2 text-sm font-bold text-white bg-green-600 py-2.5 rounded-xl shadow-lg shadow-green-200 group-hover:bg-green-700 transition-colors">
                     Download <i class="ph-bold ph-download-simple"></i>
@@ -131,7 +127,6 @@ function renderFullDetails(id, app, container) {
                     ${app.developer} <i class="ph-fill ph-check-circle"></i>
                 </p>
                 <p class="text-sm text-gray-400 font-mono mb-6">${app.packageName}</p>
-                
                 <div class="flex flex-wrap justify-center md:justify-start gap-3">
                     <span class="bg-gray-100 px-4 py-2 rounded-xl font-bold text-gray-600 text-sm">v${app.version}</span>
                     <span class="bg-gray-100 px-4 py-2 rounded-xl font-bold text-gray-600 text-sm">${app.size}</span>
@@ -139,28 +134,20 @@ function renderFullDetails(id, app, container) {
                 </div>
             </div>
         </div>
-
         <a href="${app.apkUrl}" target="_blank" onclick="trackDownload('${id}')" 
            class="flex items-center justify-center gap-3 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-lg py-5 rounded-2xl shadow-xl shadow-green-200 transition transform hover:-translate-y-1 mb-10">
            <i class="ph-bold ph-download-simple text-2xl"></i> Download APK Now
         </a>
-
         ${screenshotsHtml ? `<h3 class="font-bold text-gray-900 text-xl mb-4">Preview</h3>` + screenshotsHtml : ''}
-
         <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 mb-8">
             <h3 class="font-bold text-gray-900 mb-3 text-lg">About this app</h3>
             <p class="text-gray-600 leading-relaxed whitespace-pre-line text-base">${app.description || 'No description provided.'}</p>
         </div>
-
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                    <i class="ph-fill ph-code text-blue-600"></i> Technical Information
-                </h3>
+                <h3 class="font-bold text-gray-900 flex items-center gap-2"><i class="ph-fill ph-code text-blue-600"></i> Technical Information</h3>
             </div>
-            <div class="p-6">
-                ${techHtml}
-            </div>
+            <div class="p-6">${techHtml}</div>
         </div>
     `;
 }
@@ -168,7 +155,6 @@ function renderFullDetails(id, app, container) {
 async function loadRecommendedApps(currentId) {
     const grid = document.getElementById('recommendedGrid');
     if(!grid) return;
-
     try {
         const q = query(collection(db, "apps"), orderBy("downloads", "desc"), limit(6));
         const snapshot = await getDocs(q);
@@ -187,9 +173,7 @@ async function loadRecommendedApps(currentId) {
                                 <span class="text-[10px]">🔥 ${app.downloads || 0} DLs</span>
                             </div>
                         </div>
-                        <button class="text-green-600 bg-green-50 p-2 rounded-full opacity-0 group-hover:opacity-100 transition"><i class="ph-bold ph-caret-right"></i></button>
-                    </div>
-                `;
+                    </div>`;
                 grid.innerHTML += card;
                 count++;
             }
@@ -218,7 +202,7 @@ function generateTechHtml(d) {
 window.trackDownload = (id) => updateDoc(doc(db, "apps", id), { downloads: increment(1) });
 
 // ==========================================
-// ADMIN LOGIC
+// ADMIN LOGIC (Fixed Edit Button)
 // ==========================================
 
 export function initAdmin() {
@@ -248,7 +232,6 @@ async function handleFormSubmit(e) {
     e.preventDefault();
     document.getElementById('uploadingScreen').classList.remove('hidden');
     
-    // COLLECT SPECIFIC TECH FIELDS
     const techData = {
         verCode: document.getElementById('t_verCode').value,
         date: document.getElementById('t_date').value,
@@ -282,14 +265,18 @@ async function handleFormSubmit(e) {
         apkUrl: document.getElementById('apkUrl').value,
         iconUrl: document.getElementById('iconUrl').value,
         screenshots: document.getElementById('screenshots').value,
-        techData: techData, // Save as Object
+        techData: techData,
         updatedAt: serverTimestamp()
     };
 
     try {
         if (isEditMode && currentEditId) await updateDoc(doc(db, "apps", currentEditId), appData);
         else { appData.downloads = 0; appData.uploadedAt = serverTimestamp(); await addDoc(collection(db, "apps"), appData); }
-        setTimeout(() => { document.getElementById('successScreen').classList.remove('hidden'); document.getElementById('uploadingScreen').classList.add('hidden'); loadAdminList(); }, 500);
+        setTimeout(() => { 
+            document.getElementById('successScreen').classList.remove('hidden'); 
+            document.getElementById('uploadingScreen').classList.add('hidden'); 
+            loadAdminList(); 
+        }, 500);
     } catch (error) { alert("Error: " + error.message); document.getElementById('uploadingScreen').classList.add('hidden'); }
 }
 
@@ -307,20 +294,68 @@ async function loadAdminList() {
     });
 }
 
-window.closeSuccessScreen = () => { document.getElementById('successScreen').classList.add('hidden'); document.getElementById('uploadForm').reset(); isEditMode = false; currentEditId = null; document.getElementById('uploadBtn').innerText = "Save App Data"; }
-window.deleteApp = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "apps", id)); loadAdminList(); }};
-window.editApp = async (id) => {
-    const docSnap = await getDoc(doc(db, "apps", id));
-    if (docSnap.exists()) {
-        const data = docSnap.data();
-        isEditMode = true; currentEditId = id;
-        document.getElementById('appName').value = data.name; document.getElementById('packageName').value = data.packageName; document.getElementById('developer').value = data.developer; document.getElementById('category').value = data.category; document.getElementById('version').value = data.version; document.getElementById('size').value = data.size; document.getElementById('apkUrl').value = data.apkUrl; document.getElementById('iconUrl').value = data.iconUrl; document.getElementById('screenshots').value = data.screenshots || '';
-        
-        // Fill Tech
-        const t = data.techData || {};
-        document.getElementById('t_verCode').value = t.verCode||''; document.getElementById('t_date').value = t.date||''; document.getElementById('t_compress').value = t.compress||'Enabled'; document.getElementById('t_minSdk').value = t.minSdk||''; document.getElementById('t_targetSdk').value = t.targetSdk||''; document.getElementById('t_compileSdk').value = t.compileSdk||''; document.getElementById('t_abi').value = t.abi||''; document.getElementById('t_devices').value = t.devices||''; document.getElementById('t_v1').checked = t.v1||false; document.getElementById('t_v2').checked = t.v2||false; document.getElementById('t_v3').checked = t.v3||false; document.getElementById('t_v4').checked = t.v4||false; document.getElementById('t_algo').value = t.algo||''; document.getElementById('t_sha1').value = t.sha1||''; document.getElementById('t_sha256').value = t.sha256||''; document.getElementById('t_issuer').value = t.issuer||''; document.getElementById('t_proguard').value = t.proguard||'Enabled'; document.getElementById('t_obfus').value = t.obfus||'Enabled'; document.getElementById('t_debug').value = t.debug||'False'; document.getElementById('t_perms').value = t.perms||'';
+window.closeSuccessScreen = () => { 
+    document.getElementById('successScreen').classList.add('hidden'); 
+    document.getElementById('uploadForm').reset(); 
+    isEditMode = false; currentEditId = null; 
+    document.getElementById('uploadBtn').innerText = "Save App Data"; 
+}
 
-        document.getElementById('uploadBtn').innerText = "Update App"; document.getElementById('dashboard').scrollIntoView();
+window.deleteApp = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "apps", id)); loadAdminList(); }};
+
+// 🔥 FIXED EDIT FUNCTION - NOW POPULATES ALL FIELDS CORRECTLY 🔥
+window.editApp = async (id) => {
+    try {
+        const docSnap = await getDoc(doc(db, "apps", id));
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            isEditMode = true; 
+            currentEditId = id;
+            
+            // Populate Core Fields
+            document.getElementById('appName').value = data.name || ''; 
+            document.getElementById('packageName').value = data.packageName || ''; 
+            document.getElementById('developer').value = data.developer || ''; 
+            document.getElementById('category').value = data.category || ''; 
+            document.getElementById('version').value = data.version || ''; 
+            document.getElementById('size').value = data.size || ''; 
+            document.getElementById('apkUrl').value = data.apkUrl || ''; 
+            document.getElementById('iconUrl').value = data.iconUrl || ''; 
+            document.getElementById('screenshots').value = data.screenshots || '';
+            
+            // Populate Tech Specs
+            const t = data.techData || {};
+            document.getElementById('t_verCode').value = t.verCode || ''; 
+            document.getElementById('t_date').value = t.date || ''; 
+            document.getElementById('t_compress').value = t.compress || 'Enabled'; 
+            document.getElementById('t_minSdk').value = t.minSdk || ''; 
+            document.getElementById('t_targetSdk').value = t.targetSdk || ''; 
+            document.getElementById('t_compileSdk').value = t.compileSdk || ''; 
+            document.getElementById('t_abi').value = t.abi || ''; 
+            document.getElementById('t_devices').value = t.devices || ''; 
+            
+            document.getElementById('t_v1').checked = t.v1 || false; 
+            document.getElementById('t_v2').checked = t.v2 || false; 
+            document.getElementById('t_v3').checked = t.v3 || false; 
+            document.getElementById('t_v4').checked = t.v4 || false; 
+            
+            document.getElementById('t_algo').value = t.algo || ''; 
+            document.getElementById('t_sha1').value = t.sha1 || ''; 
+            document.getElementById('t_sha256').value = t.sha256 || ''; 
+            document.getElementById('t_issuer').value = t.issuer || ''; 
+            document.getElementById('t_proguard').value = t.proguard || 'Enabled'; 
+            document.getElementById('t_obfus').value = t.obfus || 'Enabled'; 
+            document.getElementById('t_debug').value = t.debug || 'False'; 
+            document.getElementById('t_perms').value = t.perms || '';
+
+            // Update UI
+            document.getElementById('uploadBtn').innerText = "Update App Data"; 
+            document.getElementById('formTitle').innerText = "Edit: " + data.name;
+            document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+        }
+    } catch (e) {
+        alert("Error loading edit data: " + e.message);
     }
 };
+
 window.logout = () => signOut(auth);
