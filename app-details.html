@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Details - APKVerse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>.no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }</style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 cursor-pointer">
+                <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg shadow-green-200"><i class="ph-fill ph-arrow-left"></i></div>
+                <span class="text-lg font-extrabold tracking-tight">Back to <span class="text-green-600">Home</span></span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-2 space-y-6">
+            <div id="detailsContainer" class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 min-h-[400px]">
+                <div class="text-center py-20"><i class="ph ph-spinner animate-spin text-4xl text-green-600"></i></div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm sticky top-24">
+                <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2 text-lg">
+                    <i class="ph-fill ph-star text-yellow-500"></i> Recommended
+                </h3>
+                <div id="recommendedGrid" class="space-y-4">
+                    <div class="text-center py-10 text-gray-400 text-sm">Loading recommendations...</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-100 py-8 mt-8 text-center text-sm text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
+
+    <script type="module">
+        import { loadAppDetails } from './app.js';
+        
+        // URL থেকে ID নেওয়া
+        const params = new URLSearchParams(window.location.search);
+        const appId = params.get('id');
+
+        if(appId) {
+            loadAppDetails(appId);
+        } else {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
