@@ -2,12 +2,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, increment, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-// YOUR CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBjiNy8apBFdLQOAiG1nCtv94DfaRwZEuM",
   authDomain: "apkverse-bjyjs.firebaseapp.com",
   projectId: "apkverse-bjyjs",
-  storageBucket: "apkverse-bjyjs.firebasestorage.app",
   messagingSenderId: "433058399647",
   appId: "1:433058399647:web:80aae884dbbd0aff94e9aa",
   measurementId: "G-6HXXD1W0KN"
@@ -20,13 +18,12 @@ const auth = getAuth(app);
 let isEditMode = false;
 let currentEditId = null;
 
-// Helper
 window.setupAdmin = async () => {
     try { await createUserWithEmailAndPassword(auth, "admin@admin.com", "admin123"); alert("Admin Created!"); } catch (e) { alert(e.message); }
 };
 
 // ==========================================
-// USER: DISPLAY APPS
+// USER: DISPLAY LOGIC
 // ==========================================
 
 export async function loadApps(category = 'All', searchQuery = '') {
@@ -47,7 +44,6 @@ export async function loadApps(category = 'All', searchQuery = '') {
             const data = doc.data();
             const matchesCategory = category === 'All' || data.category === category;
             const matchesSearch = searchQuery === '' || data.name.toLowerCase().includes(searchQuery.toLowerCase());
-            
             if (matchesCategory && matchesSearch) {
                 hasResults = true;
                 renderAppCard(doc.id, data, grid);
@@ -70,12 +66,67 @@ function renderAppCard(id, app, container) {
                 </div>
             </div>
             <div class="mt-auto pt-3 border-t border-gray-50 flex justify-between items-center text-xs text-gray-500">
-                <span>${app.size} MB</span>
+                <span>${app.size}</span>
                 <span class="text-green-600 font-bold">Download</span>
             </div>
         </div>
     `;
     container.innerHTML += card;
+}
+
+// GENERATE OLD STYLE HTML FROM DATA OBJECT
+function generateTechHtml(d) {
+    if(!d) return '<div class="text-gray-400 italic">No details.</div>';
+    
+    // Helper for rows
+    const row = (k, v) => `<div class="flex justify-between py-1 border-b border-gray-50 text-xs"><span class="font-bold text-gray-800">${k}:</span><span class="font-mono text-gray-600 text-right">${v || '-'}</span></div>`;
+    
+    return `
+        <div class="space-y-4">
+            <div>
+                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Build Info</div>
+                ${row('Version Code', d.verCode)}
+                ${row('Release Date', d.date)}
+                ${row('Build Type', d.buildType)}
+                ${row('Build System', d.buildSys)}
+                ${row('Compression', d.compress)}
+            </div>
+            
+            <div>
+                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Android Environment</div>
+                ${row('Min SDK', d.minSdk)}
+                ${row('Target SDK', d.targetSdk)}
+                ${row('Compile SDK', d.compileSdk)}
+            </div>
+
+            <div>
+                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Architecture & Screen</div>
+                <div class="text-xs text-gray-600 mb-1"><span class="font-bold">ABI:</span> ${d.abi}</div>
+                <div class="text-xs text-gray-600 mb-1"><span class="font-bold">DPI:</span> ${d.dpi}</div>
+                ${row('Devices', d.devices)}
+            </div>
+
+            <div>
+                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Signature</div>
+                ${row('Scheme V1', d.v1 ? 'Yes' : 'No')}
+                ${row('Scheme V2', d.v2 ? 'Yes' : 'No')}
+                ${row('Scheme V3', d.v3 ? 'Yes' : 'No')}
+                <div class="mt-1 text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-1 border rounded">
+                    SHA-256: ${d.sha || 'N/A'}
+                </div>
+            </div>
+
+            <div>
+                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Security & Permissions</div>
+                ${row('ProGuard', d.proguard)}
+                ${row('Debuggable', d.debug)}
+                <div class="mt-2 text-xs text-gray-600">
+                    <span class="font-bold">Permissions:</span>
+                    <p class="font-mono text-[10px] mt-1">${d.perms || 'None'}</p>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 window.openAppModal = async (id) => {
@@ -94,45 +145,29 @@ window.openAppModal = async (id) => {
             screenshotsHtml = `<div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar mb-6">` + shots.map(url => `<img src="${url.trim()}" class="h-48 rounded-lg shadow-sm border bg-gray-50">`).join('') + `</div>`;
         }
 
-        const techHtml = `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div class="flex justify-between border-b pb-1"><span class="text-gray-500">Version Code</span> <span class="font-mono text-gray-900">${app.versionCode || '-'}</span></div>
-                <div class="flex justify-between border-b pb-1"><span class="text-gray-500">Min SDK</span> <span class="font-mono text-gray-900">${app.minSdk || '-'}</span></div>
-                <div class="flex justify-between border-b pb-1"><span class="text-gray-500">Target SDK</span> <span class="font-mono text-gray-900">${app.targetSdk || '-'}</span></div>
-                <div class="flex justify-between border-b pb-1"><span class="text-gray-500">Architecture</span> <span class="font-mono text-gray-900">${app.abi || '-'}</span></div>
-                <div class="flex justify-between border-b pb-1"><span class="text-gray-500">Screen DPI</span> <span class="font-mono text-gray-900">${app.dpi || '-'}</span></div>
-                <div class="col-span-full mt-2">
-                    <div class="text-xs text-gray-500 font-bold mb-1">SHA-256 Signature</div>
-                    <div class="bg-gray-100 p-2 rounded text-[10px] font-mono break-all text-gray-600 border">${app.sha256 || 'N/A'}</div>
-                </div>
-                 <div class="col-span-full mt-2">
-                    <div class="text-xs text-gray-500 font-bold mb-1">Permissions</div>
-                    <div class="text-xs text-gray-600">${app.permissions ? app.permissions.split(',').map(p => `<span class="inline-block bg-blue-50 text-blue-700 px-2 py-0.5 rounded mr-1 mb-1 border border-blue-100">${p.trim()}</span>`).join('') : 'None'}</div>
-                </div>
-            </div>
-        `;
+        const techHtml = generateTechHtml(app.techData);
 
         content.innerHTML = `
             <div class="flex flex-col md:flex-row gap-6 mb-6">
                 <img src="${app.iconUrl}" onerror="this.src='https://via.placeholder.com/100'" class="w-24 h-24 rounded-3xl shadow-md bg-white mx-auto md:mx-0 object-cover">
                 <div class="text-center md:text-left flex-1">
                     <h2 class="text-3xl font-bold text-gray-900">${app.name}</h2>
-                    <p class="text-sm text-green-600 font-bold mb-1">${app.developer} <i class="ph-fill ph-check-circle"></i></p>
+                    <p class="text-sm text-green-600 font-bold mb-1">${app.developer}</p>
                     <p class="text-xs text-gray-400 font-mono mb-3">${app.packageName}</p>
                     <div class="flex justify-center md:justify-start gap-3 text-sm">
                         <span class="bg-gray-100 px-3 py-1 rounded-lg">v${app.version}</span>
-                        <span class="bg-gray-100 px-3 py-1 rounded-lg">${app.size} MB</span>
+                        <span class="bg-gray-100 px-3 py-1 rounded-lg">${app.size}</span>
                     </div>
                 </div>
             </div>
             <a href="${app.apkUrl}" target="_blank" onclick="trackDownload('${id}')" class="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1 mb-8"><i class="ph-bold ph-download-simple text-xl"></i> Download APK</a>
             ${screenshotsHtml ? `<h3 class="font-bold text-gray-900 mb-3">Preview</h3>` + screenshotsHtml : ''}
-            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 mb-6">
-                <h3 class="font-bold text-gray-900 mb-2">Description</h3>
-                <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">${app.description || 'No description.'}</p>
+            
+            <div class="flex border-b mb-4">
+                <button onclick="switchTab('tech')" id="tab-tech" class="px-4 py-2 text-sm font-bold text-green-600 border-b-2 border-green-600">Technical Specs</button>
             </div>
-            <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-                <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2 border-b pb-2"><i class="ph-fill ph-cpu text-blue-600"></i> Technical Specs</h3>
+            
+            <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
                 ${techHtml}
             </div>
         `;
@@ -143,7 +178,7 @@ window.closeModal = () => document.getElementById('appModal').classList.add('hid
 window.trackDownload = (id) => updateDoc(doc(db, "apps", id), { downloads: increment(1) });
 
 // ==========================================
-// ADMIN: SAVE DATA (TEXT ONLY)
+// ADMIN LOGIC
 // ==========================================
 
 export function initAdmin() {
@@ -171,12 +206,40 @@ export function initAdmin() {
     if(uploadForm) uploadForm.addEventListener('submit', handleFormSubmit);
 }
 
+// COLLECT DATA FROM 30 FIELDS
 async function handleFormSubmit(e) {
     e.preventDefault();
     const screen = document.getElementById('uploadingScreen');
     screen.classList.remove('hidden');
 
-    // Collect ALL inputs (Just Text)
+    const techData = {
+        verCode: document.getElementById('t_verCode').value,
+        date: document.getElementById('t_date').value,
+        buildSys: document.getElementById('t_buildSys').value,
+        buildType: document.getElementById('t_buildType').value,
+        variant: document.getElementById('t_variant').value,
+        compress: document.getElementById('t_compress').value,
+        minSdk: document.getElementById('t_minSdk').value,
+        targetSdk: document.getElementById('t_targetSdk').value,
+        compileSdk: document.getElementById('t_compileSdk').value,
+        abi: document.getElementById('t_abi').value,
+        dpi: document.getElementById('t_dpi').value,
+        devices: document.getElementById('t_devices').value,
+        multi: document.getElementById('t_multi').value,
+        v1: document.getElementById('t_v1').checked,
+        v2: document.getElementById('t_v2').checked,
+        v3: document.getElementById('t_v3').checked,
+        v4: document.getElementById('t_v4').checked,
+        algo: document.getElementById('t_algo').value,
+        sha: document.getElementById('t_sha').value,
+        issuer: document.getElementById('t_issuer').value,
+        valid: document.getElementById('t_valid').value,
+        proguard: document.getElementById('t_proguard').value,
+        obfus: document.getElementById('t_obfus').value,
+        debug: document.getElementById('t_debug').value,
+        perms: document.getElementById('t_perms').value
+    };
+
     const appData = {
         name: document.getElementById('appName').value,
         packageName: document.getElementById('packageName').value,
@@ -184,19 +247,10 @@ async function handleFormSubmit(e) {
         category: document.getElementById('category').value,
         size: document.getElementById('size').value,
         version: document.getElementById('version').value,
-        description: document.getElementById('description').value,
-        
-        versionCode: document.getElementById('versionCode').value,
-        minSdk: document.getElementById('minSdk').value,
-        targetSdk: document.getElementById('targetSdk').value,
-        abi: document.getElementById('abi').value,
-        dpi: document.getElementById('dpi').value,
-        sha256: document.getElementById('sha256').value,
-        permissions: document.getElementById('permissions').value,
-        
+        iconUrl: document.getElementById('iconUrl').value,
         apkUrl: document.getElementById('apkUrl').value,
-        iconUrl: document.getElementById('iconUrl').value, // Text URL
         screenshots: document.getElementById('screenshots').value,
+        techData: techData, // Save object
         updatedAt: serverTimestamp()
     };
     
@@ -228,22 +282,15 @@ async function loadAdminList() {
     const q = query(collection(db, "apps"), orderBy("uploadedAt", "desc"));
     const snapshot = await getDocs(q);
     list.innerHTML = '';
-    
     snapshot.forEach(doc => {
         const app = doc.data();
         list.innerHTML += `
             <li class="p-4 bg-gray-50 rounded flex justify-between items-center mb-2 border border-gray-100">
                 <div class="flex items-center gap-3">
-                    <img src="${app.iconUrl}" onerror="this.src='https://via.placeholder.com/32'" class="w-10 h-10 rounded shadow-sm object-cover">
-                    <div>
-                        <div class="font-bold text-gray-800 text-sm">${app.name}</div>
-                        <div class="text-xs text-gray-500">${app.version}</div>
-                    </div>
+                    <img src="${app.iconUrl}" class="w-10 h-10 rounded shadow-sm object-cover">
+                    <div><div class="font-bold text-gray-800 text-sm">${app.name}</div><div class="text-xs text-gray-500">${app.version}</div></div>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="editApp('${doc.id}')" class="px-3 py-1 bg-blue-100 text-blue-600 rounded text-xs font-bold">Edit</button>
-                    <button onclick="deleteApp('${doc.id}')" class="px-3 py-1 bg-red-100 text-red-600 rounded text-xs font-bold">Del</button>
-                </div>
+                <div class="flex gap-2"><button onclick="editApp('${doc.id}')" class="px-3 py-1 bg-blue-100 text-blue-600 rounded text-xs font-bold">Edit</button><button onclick="deleteApp('${doc.id}')" class="px-3 py-1 bg-red-100 text-red-600 rounded text-xs font-bold">Del</button></div>
             </li>`;
     });
 }
@@ -252,7 +299,7 @@ window.closeSuccessScreen = () => {
     document.getElementById('successScreen').classList.add('hidden');
     document.getElementById('uploadForm').reset();
     isEditMode = false; currentEditId = null;
-    document.getElementById('uploadBtn').innerText = "Publish App";
+    document.getElementById('uploadBtn').innerText = "Save App Data";
 }
 
 window.deleteApp = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "apps", id)); loadAdminList(); }};
@@ -263,26 +310,43 @@ window.editApp = async (id) => {
         const data = docSnap.data();
         isEditMode = true; currentEditId = id;
         
-        // Fill All Fields
         document.getElementById('appName').value = data.name;
         document.getElementById('packageName').value = data.packageName;
         document.getElementById('developer').value = data.developer;
         document.getElementById('category').value = data.category;
         document.getElementById('size').value = data.size;
         document.getElementById('version').value = data.version;
-        document.getElementById('description').value = data.description;
-        
-        document.getElementById('versionCode').value = data.versionCode || '';
-        document.getElementById('minSdk').value = data.minSdk || '';
-        document.getElementById('targetSdk').value = data.targetSdk || '';
-        document.getElementById('abi').value = data.abi || '';
-        document.getElementById('dpi').value = data.dpi || '';
-        document.getElementById('sha256').value = data.sha256 || '';
-        document.getElementById('permissions').value = data.permissions || '';
-
         document.getElementById('apkUrl').value = data.apkUrl;
         document.getElementById('iconUrl').value = data.iconUrl;
         document.getElementById('screenshots').value = data.screenshots || '';
+
+        // Fill Tech Specs
+        const t = data.techData || {};
+        document.getElementById('t_verCode').value = t.verCode || '';
+        document.getElementById('t_date').value = t.date || '';
+        document.getElementById('t_buildSys').value = t.buildSys || '';
+        document.getElementById('t_buildType').value = t.buildType || 'Release';
+        document.getElementById('t_variant').value = t.variant || '';
+        document.getElementById('t_compress').value = t.compress || 'Enabled';
+        document.getElementById('t_minSdk').value = t.minSdk || '';
+        document.getElementById('t_targetSdk').value = t.targetSdk || '';
+        document.getElementById('t_compileSdk').value = t.compileSdk || '';
+        document.getElementById('t_abi').value = t.abi || '';
+        document.getElementById('t_dpi').value = t.dpi || '';
+        document.getElementById('t_devices').value = t.devices || '';
+        document.getElementById('t_multi').value = t.multi || '';
+        document.getElementById('t_v1').checked = t.v1 || false;
+        document.getElementById('t_v2').checked = t.v2 || false;
+        document.getElementById('t_v3').checked = t.v3 || false;
+        document.getElementById('t_v4').checked = t.v4 || false;
+        document.getElementById('t_algo').value = t.algo || '';
+        document.getElementById('t_sha').value = t.sha || '';
+        document.getElementById('t_issuer').value = t.issuer || '';
+        document.getElementById('t_valid').value = t.valid || '';
+        document.getElementById('t_proguard').value = t.proguard || 'Enabled';
+        document.getElementById('t_obfus').value = t.obfus || 'Enabled';
+        document.getElementById('t_debug').value = t.debug || 'False';
+        document.getElementById('t_perms').value = t.perms || '';
 
         document.getElementById('uploadBtn').innerText = "Update App";
         document.getElementById('dashboard').scrollIntoView();
