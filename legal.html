@@ -11,9 +11,7 @@
 
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
         <div class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-2">
-            <a href="index.html" class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition">
-                <i class="ph-bold ph-arrow-left text-xl"></i> <span class="font-bold text-sm">Back to Home</span>
-            </a>
+            <a href="index.html" class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition"><i class="ph-bold ph-arrow-left text-xl"></i> <span class="font-bold text-sm">Back to Home</span></a>
         </div>
     </nav>
 
@@ -24,29 +22,24 @@
         </div>
     </main>
 
-    <footer id="main-footer"></footer>
+    <div id="global-footer"></div>
+    <script src="footer.js"></script>
 
     <script type="module" src="./app.js"></script>
     <script>
         const content = {
-            'dmca': { title: 'DMCA Policy', body: '<p>APKVerse respects the intellectual property rights of others. If you believe your copyrighted work is being infringed, please contact us immediately.</p>' },
-            'privacy': { title: 'Privacy Policy', body: '<p>Your privacy is important to us. We do not sell your personal data to third parties.</p>' },
-            'terms': { title: 'Terms & Conditions', body: '<p>By using APKVerse, you agree to comply with our terms of service and usage guidelines.</p>' },
-            'contact': { title: 'Contact Us', body: '<p>Need help? Reach out to us at <strong>support@apkverse.com</strong>.</p>' },
-            'about': { title: 'About Us', body: '<p>APKVerse provides a secure and fast platform for downloading Android apps and games.</p>' },
-            'disclaimer': { title: 'Disclaimer', body: '<p>APKVerse is not affiliated with Google or Android. All apps are property of their respective developers.</p>' },
-            'cookie': { title: 'Cookie Policy', body: '<p>We use cookies to improve your experience on our website. By using our site, you agree to our cookie policy.</p>' }
+            'dmca': { title: 'DMCA Policy', body: '<p>APKVerse respects intellectual property...</p>' },
+            'privacy': { title: 'Privacy Policy', body: '<p>Your privacy is important to us...</p>' },
+            'terms': { title: 'Terms & Conditions', body: '<p>By using this site you agree...</p>' },
+            'contact': { title: 'Contact Us', body: '<p>Email: support@apkverse.com</p>' }
         };
-
         const params = new URLSearchParams(window.location.search);
         const page = params.get('page');
-
         if(content[page]) {
             document.getElementById('pageTitle').innerText = content[page].title;
             document.getElementById('pageContent').innerHTML = content[page].body;
         } else {
-            document.getElementById('pageTitle').innerText = "404 - Page Not Found";
-            document.getElementById('pageContent').innerHTML = "<p>The requested information page does not exist.</p>";
+            document.getElementById('pageTitle').innerText = "404 Not Found";
         }
     </script>
 </body>
