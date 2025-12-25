@@ -25,15 +25,6 @@
         <h2 class="text-xl font-bold">Processing...</h2>
     </div>
 
-    <div id="successScreen" class="hidden fixed inset-0 bg-green-600 z-[100] flex flex-col items-center justify-center text-white px-4 text-center">
-        <div class="bg-white text-green-600 p-4 rounded-full text-4xl mb-4 shadow-xl"><i class="ph-bold ph-check"></i></div>
-        <h2 class="text-2xl font-bold mb-6">Success!</h2>
-        <div class="flex gap-3 justify-center">
-            <button onclick="closeSuccessScreen()" class="bg-white text-green-700 px-5 py-2 rounded-lg font-bold text-sm">OK</button>
-            <a href="index.html" target="_blank" class="bg-green-800 text-white border border-green-400 px-5 py-2 rounded-lg font-bold text-sm">View Site</a>
-        </div>
-    </div>
-
     <div id="dashboard" class="hidden min-h-screen flex flex-col">
         
         <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
@@ -47,90 +38,84 @@
         <div class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6">
             
             <div class="flex gap-6 mb-6 border-b border-gray-200">
-                <button onclick="switchTab('apps')" id="tab-apps" class="px-4 py-3 text-sm font-bold text-green-600 border-b-2 border-green-600 transition">
-                    <i class="ph-bold ph-squares-four"></i> Manage Apps
-                </button>
-                <button onclick="switchTab('sliders')" id="tab-sliders" class="px-4 py-3 text-sm font-bold text-gray-500 hover:text-green-600 transition">
-                    <i class="ph-bold ph-images"></i> Hero Sliders
-                </button>
+                <button onclick="switchTab('apps')" id="tab-apps" class="px-4 py-3 text-sm font-bold text-green-600 border-b-2 border-green-600 transition">Manage Apps</button>
+                <button onclick="switchTab('sliders')" id="tab-sliders" class="px-4 py-3 text-sm font-bold text-gray-500 hover:text-green-600 transition">Hero Sliders</button>
             </div>
 
             <div id="section-apps" class="block animate-fade-in">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                        <div class="flex justify-between items-center border-b pb-3 mb-6">
-                            <h2 id="formTitle" class="text-lg font-bold text-gray-800">Add New App</h2>
-                            <button type="button" onclick="resetForm()" class="text-xs text-blue-600 font-bold hover:underline">Reset Form</button>
-                        </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
+                    <div class="flex justify-between items-center border-b pb-3 mb-6">
+                        <h2 id="formTitle" class="text-lg font-bold text-gray-800">Add New App</h2>
+                        <button type="button" onclick="resetForm()" class="text-xs text-blue-600 font-bold hover:underline">Reset Form</button>
+                    </div>
+                    
+                    <form id="uploadForm" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         
-                        <form id="uploadForm" class="space-y-4">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><label class="label">App Name</label><input type="text" id="appName" class="input-field" required></div>
-                                <div><label class="label">Package Name</label><input type="text" id="packageName" class="input-field font-mono" required></div>
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase border-b pb-1">Basic Info</h3>
+                            <div><label class="label">App Name</label><input type="text" id="appName" class="input-field" required></div>
+                            <div><label class="label">Package Name</label><input type="text" id="packageName" class="input-field font-mono" required></div>
+                            <div><label class="label">Developer</label><input type="text" id="developer" class="input-field" required></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="label">Category</label><select id="category" class="input-field bg-white"><option>Games</option><option>Social</option><option>Tools</option><option>Productivity</option><option>Action</option><option>Arcade</option></select></div>
+                                <div><label class="label">Size</label><input type="text" id="size" class="input-field" placeholder="15 MB" required></div>
                             </div>
-                            <div class="grid grid-cols-3 gap-3">
-                                <div><label class="label">Developer</label><input type="text" id="developer" class="input-field"></div>
-                                <div>
-                                    <label class="label">Category</label>
-                                    <select id="category" class="input-field bg-white">
-                                        <option>Games</option><option>Social</option><option>Tools</option><option>Productivity</option><option>Action</option>
-                                    </select>
-                                </div>
-                                <div><label class="label">Size</label><input type="text" id="size" class="input-field" placeholder="25 MB"></div>
+                            <div><label class="label">Version</label><input type="text" id="version" class="input-field" required></div>
+                            <div><label class="label">Icon URL</label><input type="url" id="iconUrl" class="input-field" required></div>
+                            <div><label class="label">APK URL</label><input type="url" id="apkUrl" class="input-field" required></div>
+                        </div>
+
+                        <div class="space-y-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase border-b pb-1">Technical Specs</h3>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="label">Ver. Code</label><input type="text" id="t_verCode" class="input-field bg-white"></div>
+                                <div><label class="label">Min SDK</label><input type="text" id="t_minSdk" class="input-field bg-white"></div>
                             </div>
-                            <div><label class="label">Version</label><input type="text" id="version" class="input-field" placeholder="1.0.0"></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="label">Target SDK</label><input type="text" id="t_targetSdk" class="input-field bg-white"></div>
+                                <div><label class="label">Architecture</label><input type="text" id="t_abi" class="input-field bg-white" placeholder="arm64-v8a"></div>
+                            </div>
+                            <div><label class="label">SHA-1 Signature</label><input type="text" id="t_sha1" class="input-field bg-white font-mono text-[10px]"></div>
+                            <div><label class="label">SHA-256 Signature</label><input type="text" id="t_sha256" class="input-field bg-white font-mono text-[10px]"></div>
                             
-                            <div class="p-3 bg-blue-50 rounded border border-blue-100">
-                                <label class="label text-blue-800">Icon URL</label>
-                                <input type="url" id="iconUrl" class="input-field border-blue-200" required>
+                            <div class="flex gap-2 mt-2">
+                                <label class="flex items-center gap-1 text-[10px]"><input type="checkbox" id="t_v1"> V1</label>
+                                <label class="flex items-center gap-1 text-[10px]"><input type="checkbox" id="t_v2"> V2</label>
+                                <label class="flex items-center gap-1 text-[10px]"><input type="checkbox" id="t_v3"> V3</label>
                             </div>
-                            <div class="p-3 bg-green-50 rounded border border-green-100">
-                                <label class="label text-green-800">APK Download URL</label>
-                                <input type="url" id="apkUrl" class="input-field border-green-200" required>
-                            </div>
-                            <div><label class="label">Screenshots (Comma Separated URLs)</label><textarea id="screenshots" rows="2" class="input-field"></textarea></div>
+                        </div>
 
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase border-b pb-1">Extra Details</h3>
+                            <div><label class="label">Screenshots (Comma Separated)</label><textarea id="screenshots" rows="3" class="input-field"></textarea></div>
+                            <div><label class="label">Description</label><textarea id="description" rows="4" class="input-field"></textarea></div>
+                            
                             <div class="hidden">
-                                <input id="t_verCode"><input id="t_date"><input id="t_minSdk"><input id="t_targetSdk"><input id="t_compileSdk"><input id="t_abi"><input id="t_devices"><input id="t_sha1"><input id="t_sha256"><select id="t_compress"><option>Enabled</option></select><input id="t_algo"><input id="t_issuer"><select id="t_proguard"><option>Enabled</option></select><select id="t_obfus"><option>Enabled</option></select><select id="t_debug"><option>False</option></select><textarea id="t_perms"></textarea><input type="checkbox" id="t_v1"><input type="checkbox" id="t_v2"><input type="checkbox" id="t_v3"><input type="checkbox" id="t_v4">
+                                <input id="t_date"><input id="t_compileSdk"><input id="t_devices"><input id="t_algo"><input id="t_issuer"><input id="t_perms"><input id="t_compress"><input id="t_proguard"><input id="t_obfus"><input id="t_debug"><input id="t_v4">
                             </div>
 
-                            <button type="submit" id="uploadBtn" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold shadow-lg hover:bg-green-700 transition">Save App Data</button>
-                        </form>
-                    </div>
+                            <button type="submit" id="uploadBtn" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold shadow-lg hover:bg-green-700 transition mt-4">Save App</button>
+                        </div>
+                    </form>
+                </div>
 
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-fit">
-                        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-bold text-sm text-gray-700">App Library</div>
-                        <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
-                            <li class="p-6 text-center text-gray-400 text-xs">Loading apps...</li>
-                        </ul>
-                    </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-bold text-sm text-gray-700">App Library</div>
+                    <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
+                        <li class="p-6 text-center text-gray-400 text-xs">Loading apps...</li>
+                    </ul>
                 </div>
             </div>
 
             <div id="section-sliders" class="hidden animate-fade-in">
-                <div class="max-w-2xl mx-auto">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
-                        <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Add New Slide</h2>
-                        <form id="sliderForm" class="space-y-4">
-                            <div>
-                                <label class="label">Image URL (Landscape)</label>
-                                <input type="url" id="slideImg" class="input-field" placeholder="https://..." required>
-                                <p class="text-[10px] text-gray-400 mt-1">Recommended size: 1200x600 px</p>
-                            </div>
-                            <div>
-                                <label class="label">Target Link (Where clicking takes the user)</label>
-                                <input type="text" id="slideLink" class="input-field" placeholder="https://... or #">
-                            </div>
-                            <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold shadow-lg hover:bg-purple-700">Add Slide</button>
-                        </form>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-bold text-sm text-gray-700">Active Sliders</div>
-                        <ul id="sliderList" class="divide-y divide-gray-100">
-                            <li class="p-6 text-center text-gray-400 text-xs">Loading sliders...</li>
-                        </ul>
-                    </div>
+                <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
+                    <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Add Hero Slide</h2>
+                    <form id="sliderForm" class="space-y-4">
+                        <div><label class="label">Image URL</label><input type="url" id="slideImg" class="input-field" required></div>
+                        <div><label class="label">Link (Optional)</label><input type="text" id="slideLink" class="input-field"></div>
+                        <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold shadow-lg hover:bg-purple-700">Add Slide</button>
+                    </form>
+                    <ul id="sliderList" class="mt-6 divide-y divide-gray-100"></ul>
                 </div>
             </div>
 
@@ -138,15 +123,15 @@
     </div>
 
     <style>
-        .input-field { width: 100%; border: 1px solid #e5e7eb; padding: 10px; border-radius: 8px; font-size: 12px; outline: none; transition: 0.2s; }
+        .input-field { width: 100%; border: 1px solid #e5e7eb; padding: 8px; border-radius: 6px; font-size: 11px; outline: none; transition: 0.2s; }
         .input-field:focus { border-color: #16a34a; box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1); }
-        .label { font-size: 11px; font-weight: bold; color: #6b7280; margin-bottom: 4px; display: block; uppercase; letter-spacing: 0.5px; }
-        .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .label { font-size: 10px; font-weight: bold; color: #6b7280; margin-bottom: 2px; display: block; uppercase; letter-spacing: 0.5px; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-in-out; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 
     <script type="module">
-        import { initAdmin } from './app.js';
+        import { initAdmin, switchTab } from './app.js';
+        window.switchTab = switchTab;
         document.addEventListener('DOMContentLoaded', initAdmin);
     </script>
 </body>
