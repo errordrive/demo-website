@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="flex gap-3 pt-2">
                         <a href="#" class="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-blue-600 hover:text-white transition"><i class="ph-fill ph-facebook-logo text-xl"></i></a>
                         <a href="#" class="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-sky-500 hover:text-white transition"><i class="ph-fill ph-telegram-logo text-xl"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-black hover:text-white transition"><i class="ph-fill ph-x-logo text-xl"></i></a>
                     </div>
                 </div>
 
