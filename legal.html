@@ -29,19 +29,24 @@
     <script type="module" src="./app.js"></script>
     <script>
         const content = {
-            'dmca': { title: 'DMCA Policy', body: '<p>APKVerse respects intellectual property...</p>' },
-            'privacy': { title: 'Privacy Policy', body: '<p>Your privacy is important to us...</p>' },
-            'terms': { title: 'Terms & Conditions', body: '<p>By using this site...</p>' },
-            'contact': { title: 'Contact Us', body: '<p>Email: support@apkverse.com</p>' },
-            'about': { title: 'About Us', body: '<p>APKVerse is your safe destination...</p>' }
+            'dmca': { title: 'DMCA Policy', body: '<p>APKVerse respects the intellectual property rights of others. If you believe your copyrighted work is being infringed, please contact us immediately.</p>' },
+            'privacy': { title: 'Privacy Policy', body: '<p>Your privacy is important to us. We do not sell your personal data to third parties.</p>' },
+            'terms': { title: 'Terms & Conditions', body: '<p>By using APKVerse, you agree to comply with our terms of service and usage guidelines.</p>' },
+            'contact': { title: 'Contact Us', body: '<p>Need help? Reach out to us at <strong>support@apkverse.com</strong>.</p>' },
+            'about': { title: 'About Us', body: '<p>APKVerse provides a secure and fast platform for downloading Android apps and games.</p>' },
+            'disclaimer': { title: 'Disclaimer', body: '<p>APKVerse is not affiliated with Google or Android. All apps are property of their respective developers.</p>' },
+            'cookie': { title: 'Cookie Policy', body: '<p>We use cookies to improve your experience on our website. By using our site, you agree to our cookie policy.</p>' }
         };
+
         const params = new URLSearchParams(window.location.search);
         const page = params.get('page');
+
         if(content[page]) {
             document.getElementById('pageTitle').innerText = content[page].title;
             document.getElementById('pageContent').innerHTML = content[page].body;
         } else {
-            document.getElementById('pageTitle').innerText = "404 Not Found";
+            document.getElementById('pageTitle').innerText = "404 - Page Not Found";
+            document.getElementById('pageContent').innerHTML = "<p>The requested information page does not exist.</p>";
         }
     </script>
 </body>
