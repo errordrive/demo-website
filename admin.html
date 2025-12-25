@@ -41,8 +41,11 @@
         </header>
 
         <div class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6">
-            <div class="bg-white p-5 rounded-xl shadow-sm mb-6 border border-gray-200">
-                <h2 id="formTitle" class="text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2 text-gray-700">Add New App</h2>
+            
+            <div class="bg-white p-5 rounded-xl shadow-sm mb-8 border border-gray-200">
+                <h2 id="formTitle" class="text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2 text-gray-700">
+                    <i class="ph-bold ph-plus-circle text-green-600"></i> Add New App
+                </h2>
                 
                 <form id="uploadForm" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
@@ -123,8 +126,16 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[400px] overflow-y-auto"></ul>
+                <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-gray-700 text-sm flex items-center gap-2">
+                        <i class="ph-bold ph-list-dashes"></i> App Library
+                    </h3>
+                    <span class="text-xs text-gray-400">Manage your apps here</span>
+                </div>
+                <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
+                    </ul>
             </div>
+
         </div>
     </div>
 
