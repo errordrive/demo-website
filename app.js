@@ -2,7 +2,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, increment, serverTimestamp, getDoc, limit } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-// FIREBASE CONFIG
+// ==========================================
+// 1. FIREBASE CONFIGURATION
+// ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBjiNy8apBFdLQOAiG1nCtv94DfaRwZEuM",
   authDomain: "apkverse-bjyjs.firebaseapp.com",
@@ -16,92 +18,80 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// GLOBAL VARIABLES
+// Global Variables
 let isEditMode = false;
 let currentEditId = null;
 
 // ==========================================
-// 🔥 GLOBAL INITIALIZATION
+// 2. INITIALIZATION (Entry Point)
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadGlobalFooter(); 
+    console.log("App Started...");
     
-    // Ads Activation
-    initAds();
+    // 1. Load Footer (Everywhere)
+    loadGlobalFooter();
 
-    if(document.getElementById('heroSlider')) initSlider();
-    if(document.getElementById('appGrid')) loadApps();
-    if(document.getElementById('loginScreen')) initAdmin();
+    // 2. Load Ads (Only on User Pages)
+    if (!document.getElementById('loginScreen')) {
+        initAds();
+    }
+
+    // 3. Page Specific Logic
+    if (document.getElementById('heroSlider')) initSlider();
+    if (document.getElementById('appGrid')) loadApps();
+    if (document.getElementById('loginScreen')) initAdmin();
+    if (document.getElementById('detailsContainer')) {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if(id) loadAppDetails(id);
+    }
 });
 
 // ==========================================
-// 💸 FAKE ADS MODULE (NEW)
+// 3. UI COMPONENTS (Footer, Slider, Ads)
 // ==========================================
 
-function initAds() {
-    // 1. STATIC AD (Random Position near bottom)
-    const mainContent = document.querySelector('main');
-    if (mainContent) {
-        const adDiv = document.createElement('div');
-        adDiv.className = "my-8 mx-auto max-w-4xl p-1";
-        adDiv.innerHTML = `
-            <div class="bg-gray-100 border border-gray-300 rounded-lg p-4 text-center relative overflow-hidden group cursor-pointer shadow-sm hover:shadow-md transition">
-                <span class="absolute top-0 right-0 bg-gray-300 text-[10px] text-gray-600 px-2 py-0.5 rounded-bl">Sponsored</span>
-                <div class="flex flex-col md:flex-row items-center justify-center gap-4">
-                    <div class="bg-orange-500 text-white w-12 h-12 flex items-center justify-center rounded-full text-2xl font-bold"><i class="ph-bold ph-lightning"></i></div>
-                    <div class="text-left">
-                        <h4 class="font-bold text-gray-900 text-sm">Boost Your Download Speed!</h4>
-                        <p class="text-xs text-gray-500">Get APKVerse Premium for 5x faster downloads.</p>
+function loadGlobalFooter() {
+    const footer = document.getElementById('main-footer');
+    if (!footer) return;
+    footer.innerHTML = `
+        <div class="bg-white border-t border-gray-200 pt-12 pb-8 mt-12">
+            <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-lg shadow"><i class="ph-fill ph-android-logo"></i></div>
+                        <span class="text-lg font-bold">APK<span class="text-green-600">Verse</span></span>
                     </div>
-                    <button class="bg-black text-white text-xs px-4 py-2 rounded-full font-bold group-hover:bg-gray-800 transition">Learn More</button>
+                    <p class="text-xs text-gray-500 leading-relaxed mb-4">APKVerse is your trusted source for secure Android APK downloads. Verified, fast, and free.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Discover</h4>
+                    <ul class="space-y-2 text-xs text-gray-500 font-medium">
+                        <li><a href="index.html" class="hover:text-green-600 transition">Home</a></li>
+                        <li><a href="#" onclick="window.location.href='index.html'" class="hover:text-green-600 transition">Games</a></li>
+                        <li><a href="#" onclick="window.location.href='index.html'" class="hover:text-green-600 transition">Apps</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Legal</h4>
+                    <ul class="space-y-2 text-xs text-gray-500 font-medium">
+                        <li><a href="legal.html?page=privacy" class="hover:text-green-600 transition">Privacy Policy</a></li>
+                        <li><a href="legal.html?page=dmca" class="hover:text-red-500 transition">DMCA</a></li>
+                        <li><a href="legal.html?page=terms" class="hover:text-green-600 transition">Terms</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Security</h4>
+                    <div class="bg-green-50 border border-green-100 p-4 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2 text-green-700 font-bold text-xs"><i class="ph-fill ph-shield-check text-lg"></i> Verified Safe</div>
+                        <p class="text-[10px] text-green-800 leading-tight">All uploads are manually checked for malware.</p>
+                    </div>
                 </div>
             </div>
-        `;
-
-        // Randomly insert before or after the last section
-        const sections = mainContent.querySelectorAll('section');
-        if(sections.length > 0) {
-            const randomPos = Math.floor(Math.random() * sections.length);
-            mainContent.insertBefore(adDiv, sections[randomPos]);
-        } else {
-            mainContent.appendChild(adDiv);
-        }
-    }
-
-    // 2. FLOW AD (Sticky Bottom Banner)
-    // Only show on user pages (not admin)
-    if (!document.getElementById('loginScreen')) {
-        setTimeout(() => {
-            const flowAd = document.createElement('div');
-            flowAd.id = "flowAdBanner";
-            flowAd.className = "fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-[100] transform translate-y-full transition-transform duration-500 ease-out";
-            flowAd.innerHTML = `
-                <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name=VPN&background=0D8ABC&color=fff" class="w-10 h-10 rounded-lg shadow-sm">
-                        <div>
-                            <h4 class="font-bold text-gray-900 text-sm leading-tight">Secure VPN Proxy</h4>
-                            <p class="text-[10px] text-gray-500">Protect your privacy while downloading.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button class="bg-green-600 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow hover:bg-green-700 transition">Install</button>
-                        <button onclick="document.getElementById('flowAdBanner').classList.add('translate-y-full')" class="text-gray-400 hover:text-red-500 text-xl"><i class="ph-bold ph-x-circle"></i></button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(flowAd);
-            
-            // Slide Up Animation
-            setTimeout(() => flowAd.classList.remove('translate-y-full'), 100);
-        }, 3000); // Show after 3 seconds
-    }
+            <div class="max-w-7xl mx-auto px-4 border-t border-gray-100 pt-6 text-center"><p class="text-[10px] text-gray-400">&copy; 2025 APKVerse. All rights reserved.</p></div>
+        </div>`;
 }
-
-// ==========================================
-// ... (Rest of the code: Slider, Footer, LoadApps, Admin - SAME AS BEFORE)
-// ==========================================
 
 export function initSlider() {
     const track = document.getElementById('heroSlider');
@@ -115,119 +105,133 @@ export function initSlider() {
     }, 4000);
 }
 
-function loadGlobalFooter() {
-    const footerContainer = document.getElementById('main-footer');
-    if (!footerContainer) return;
-    footerContainer.innerHTML = `
-        <div class="bg-white border-t border-gray-200 pt-12 pb-8 mt-12">
-            <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div class="col-span-1 md:col-span-1">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-lg shadow"><i class="ph-fill ph-android-logo"></i></div>
-                        <span class="text-lg font-bold">APK<span class="text-green-600">Verse</span></span>
-                    </div>
-                    <p class="text-xs text-gray-500 leading-relaxed mb-4">APKVerse is your trusted source for secure Android APK downloads.</p>
+function initAds() {
+    // 1. Static Ad
+    const main = document.querySelector('main');
+    if(main) {
+        const adDiv = document.createElement('div');
+        adDiv.className = "my-8 mx-auto max-w-4xl p-2";
+        adDiv.innerHTML = `
+            <div class="bg-gray-100 border border-gray-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold"><i class="ph-fill ph-lightning"></i></div>
+                    <div><h4 class="font-bold text-gray-800 text-sm">Premium Speed</h4><p class="text-xs text-gray-500">Get 5x faster downloads.</p></div>
                 </div>
-                <div>
-                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Discover</h4>
-                    <ul class="space-y-2 text-xs text-gray-500 font-medium">
-                        <li><a href="index.html" class="hover:text-green-600">Home</a></li>
-                        <li><a href="#" onclick="filterCategory('Games')" class="hover:text-green-600">Games</a></li>
-                        <li><a href="#" onclick="filterCategory('Social')" class="hover:text-green-600">Social</a></li>
-                    </ul>
+                <button class="bg-black text-white text-xs font-bold px-4 py-2 rounded-lg">Upgrade</button>
+            </div>`;
+        const sections = main.querySelectorAll('section');
+        if(sections.length > 0) main.insertBefore(adDiv, sections[0]); else main.appendChild(adDiv);
+    }
+
+    // 2. Flow Ad (Sticky)
+    setTimeout(() => {
+        const flow = document.createElement('div');
+        flow.id = "flowAd";
+        flow.className = "fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-2xl z-50 transform translate-y-full transition-transform duration-500 p-3";
+        flow.innerHTML = `
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://ui-avatars.com/api/?name=VPN&background=random" class="w-10 h-10 rounded-lg shadow-sm">
+                    <div><h4 class="font-bold text-sm">Secure VPN</h4><p class="text-[10px] text-gray-500">Protect your privacy.</p></div>
                 </div>
-                <div>
-                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Legal</h4>
-                    <ul class="space-y-2 text-xs text-gray-500 font-medium">
-                        <li><a href="legal.html?page=privacy" class="hover:text-green-600">Privacy Policy</a></li>
-                        <li><a href="legal.html?page=dmca" class="hover:text-red-500">DMCA</a></li>
-                        <li><a href="legal.html?page=terms" class="hover:text-green-600">Terms</a></li>
-                    </ul>
+                <div class="flex gap-2">
+                    <button class="bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-lg">Install</button>
+                    <button onclick="document.getElementById('flowAd').remove()" class="text-gray-400 text-xl"><i class="ph-bold ph-x"></i></button>
                 </div>
-                <div>
-                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Security</h4>
-                    <div class="bg-green-50 border border-green-100 p-4 rounded-xl">
-                        <div class="flex items-center gap-2 mb-2 text-green-700 font-bold text-xs"><i class="ph-fill ph-shield-check text-lg"></i> Verified Safe</div>
-                        <p class="text-[10px] text-green-800 leading-tight">All uploads are manually checked.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="max-w-7xl mx-auto px-4 border-t border-gray-100 pt-6 text-center"><p class="text-[10px] text-gray-400">&copy; 2025 APKVerse. All rights reserved.</p></div>
-        </div>`;
+            </div>`;
+        document.body.appendChild(flow);
+        setTimeout(() => flow.classList.remove('translate-y-full'), 100);
+    }, 3000);
 }
 
-// APP LOGIC
+// ==========================================
+// 4. USER SIDE: APPS & DETAILS
+// ==========================================
+
 export async function loadApps(category = 'All', searchQuery = '') {
     const grid = document.getElementById('appGrid');
     const loading = document.getElementById('loading');
     if(!grid) return;
+
     grid.innerHTML = '';
     loading.classList.remove('hidden');
+
     try {
-        const q = query(collection(db, "apps"));
+        const q = query(collection(db, "apps"), orderBy("uploadedAt", "desc"));
         const snapshot = await getDocs(q);
         loading.classList.add('hidden');
+        
         let hasResults = false;
         snapshot.forEach((doc) => {
             const data = doc.data();
-            if ((category === 'All' || data.category === category) && (searchQuery === '' || data.name.toLowerCase().includes(searchQuery.toLowerCase()))) {
-                hasResults = true; renderAppCard(doc.id, data, grid);
+            const matchesCat = category === 'All' || data.category === category;
+            const matchesSearch = searchQuery === '' || data.name.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            if (matchesCat && matchesSearch) {
+                hasResults = true;
+                renderAppCard(doc.id, data, grid);
             }
         });
+
         if (!hasResults) grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10 text-sm">No apps found.</div>`;
-    } catch (e) { console.error(e); }
+    } catch (e) {
+        console.error(e);
+        loading.classList.add('hidden');
+        // Fallback for index error
+        if(e.message.includes("index")) {
+            console.warn("Index missing, loading without sort");
+            const q2 = query(collection(db, "apps"));
+            const snap2 = await getDocs(q2);
+            snap2.forEach(d => renderAppCard(d.id, d.data(), grid));
+        }
+    }
 }
 
 function renderAppCard(id, app, container) {
-    const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random&size=128`;
-    container.innerHTML += `
+    const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}`;
+    const card = `
         <div onclick="window.location.href='app-details.html?id=${id}'" class="group bg-white rounded-xl md:rounded-2xl p-3 md:p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 cursor-pointer h-full flex flex-col items-center text-center relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-b from-transparent to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div class="relative z-10 mb-2 md:mb-3"><img src="${app.iconUrl}" onerror="this.src='${fallbackImage}'" alt="${app.name}" class="w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl shadow-sm object-cover bg-gray-50 border border-gray-100 group-hover:scale-105 transition-transform duration-300"></div>
+            <div class="relative z-10 mb-2"><img src="${app.iconUrl}" onerror="this.src='${fallbackImage}'" class="w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl shadow-sm object-cover bg-gray-50 border border-gray-100"></div>
             <div class="w-full relative z-10 flex flex-col items-center flex-1">
-                <h3 class="font-bold text-gray-800 text-xs md:text-base leading-tight line-clamp-2 h-8 md:h-10 flex items-center justify-center group-hover:text-green-600 transition-colors">${app.name}</h3>
-                <div class="flex items-center gap-1 md:gap-2 mt-2 text-[9px] md:text-[10px] text-gray-500 font-medium"><span class="bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">v${app.version}</span><span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">${app.size}</span></div>
+                <h3 class="font-bold text-gray-800 text-xs md:text-base leading-tight line-clamp-2 h-8 flex items-center justify-center group-hover:text-green-600 transition-colors">${app.name}</h3>
+                <div class="flex items-center gap-1 mt-2 text-[9px] md:text-[10px] text-gray-500 font-medium"><span class="bg-gray-50 px-1.5 py-0.5 rounded border">v${app.version}</span><span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">${app.size}</span></div>
             </div>
-            <div class="mt-3 w-full relative z-10"><button class="w-full flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-white bg-green-600 py-2 md:py-2.5 rounded-lg md:rounded-xl shadow-sm group-hover:bg-green-700 transition-colors">Download</button></div>
+            <div class="mt-3 w-full relative z-10"><button class="w-full flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-white bg-green-600 py-2 rounded-lg shadow-sm group-hover:bg-green-700 transition-colors">Download</button></div>
         </div>`;
+    container.innerHTML += card;
 }
 
-// DETAILS LOGIC
 export async function loadAppDetails(id) {
     const container = document.getElementById('detailsContainer');
-    if(!container) return; 
+    if(!container) return;
     try {
         const docSnap = await getDoc(doc(db, "apps", id));
         if (docSnap.exists()) {
             const app = docSnap.data();
-            renderFullDetails(id, app, container);
+            
+            // Render Details
+            let shots = '';
+            if(app.screenshots) {
+                shots = `<div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar mb-6 snap-x">` + app.screenshots.split(',').map(u => `<img src="${u.trim()}" class="h-48 md:h-64 rounded-lg shadow border bg-gray-50 object-cover snap-center">`).join('') + `</div>`;
+            }
+            
+            const tech = app.techData || {};
+            const techHtml = `<div class="space-y-4 text-xs"><div><span class="font-bold text-blue-800 block mb-1">BUILD</span>Ver: ${tech.verCode||'-'} • SDK: ${tech.minSdk||'-'}</div><div><span class="font-bold text-blue-800 block mb-1">SIGNATURE</span>SHA1: ${tech.sha1||'-'}</div></div>`;
+
+            container.innerHTML = `
+                <div class="flex flex-col md:flex-row gap-6 mb-6 items-center md:items-start border-b border-gray-100 pb-6">
+                    <img src="${app.iconUrl}" class="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-lg border">
+                    <div class="text-center md:text-left flex-1"><h1 class="text-2xl font-bold mb-1">${app.name}</h1><p class="text-green-600 font-bold text-xs mb-2">${app.developer}</p><p class="text-gray-400 text-xs font-mono mb-4">${app.packageName}</p><div class="flex justify-center md:justify-start gap-2"><span class="bg-gray-100 px-3 py-1 rounded font-bold text-xs">v${app.version}</span><span class="bg-blue-50 text-blue-600 px-3 py-1 rounded font-bold text-xs">${app.size}</span></div></div>
+                </div>
+                <a href="${app.apkUrl}" target="_blank" onclick="trackDownload('${id}')" class="flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-4 rounded-xl shadow-lg mb-8 transition transform hover:-translate-y-1">Download APK Now</a>
+                ${shots ? '<h3 class="font-bold mb-3">Preview</h3>'+shots : ''}
+                <div class="bg-gray-50 rounded-xl p-5 mb-6"><h3 class="font-bold mb-2 text-sm">Description</h3><p class="text-xs text-gray-600 whitespace-pre-line leading-relaxed">${app.description || 'No description.'}</p></div>
+                <div class="bg-white border rounded-xl overflow-hidden"><div class="bg-gray-50 px-5 py-3 border-b"><h3 class="font-bold text-xs">Tech Specs</h3></div><div class="p-5">${techHtml}</div></div>`;
+            
             loadRecommendedApps(id);
-        } else { container.innerHTML = '<div class="text-center py-20 text-red-500 text-sm">App not found!</div>'; }
-    } catch (e) { container.innerHTML = '<div class="text-center py-20 text-red-500 text-sm">Error loading app.</div>'; }
-}
-
-function renderFullDetails(id, app, container) {
-    let screenshotsHtml = '';
-    if(app.screenshots && app.screenshots.trim() !== '') {
-        const shots = app.screenshots.split(',');
-        screenshotsHtml = `<div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar mb-6 md:mb-8 snap-x snap-mandatory">` + shots.map(url => `<img src="${url.trim()}" class="h-48 md:h-64 rounded-lg md:rounded-xl shadow-md border bg-gray-50 object-cover snap-center shrink-0">`).join('') + `</div>`;
-    }
-    const techHtml = generateTechHtml(app.techData);
-    container.innerHTML = `
-        <div class="flex flex-col md:flex-row gap-6 md:gap-8 mb-6 md:mb-8 items-center md:items-start border-b border-gray-100 pb-6 md:pb-8">
-            <img src="${app.iconUrl}" onerror="this.src='https://ui-avatars.com/api/?name=${app.name}'" class="w-24 h-24 md:w-32 md:h-32 rounded-2xl md:rounded-[2rem] shadow-lg bg-white object-cover border border-gray-100">
-            <div class="text-center md:text-left flex-1"><h1 class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-1 md:mb-2">${app.name}</h1><p class="text-xs md:text-base text-green-600 font-bold mb-2 flex items-center justify-center md:justify-start gap-1">${app.developer} <i class="ph-fill ph-check-circle"></i></p><p class="text-[10px] md:text-sm text-gray-400 font-mono mb-4 md:mb-6">${app.packageName}</p><div class="flex flex-wrap justify-center md:justify-start gap-2 md:gap-3"><span class="bg-gray-100 px-3 py-1 rounded-lg font-bold text-gray-600 text-xs md:text-sm">v${app.version}</span><span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg font-bold text-xs md:text-sm">${app.category}</span></div></div>
-        </div>
-        <a href="${app.apkUrl}" target="_blank" onclick="trackDownload('${id}')" class="flex items-center justify-center gap-2 md:gap-3 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm md:text-lg py-4 md:py-5 rounded-xl md:rounded-2xl shadow-xl shadow-green-200 transition transform hover:-translate-y-1 mb-8 md:mb-10"><i class="ph-bold ph-download-simple text-lg md:text-2xl"></i> Download APK Now</a>
-        ${screenshotsHtml ? `<h3 class="font-bold text-gray-900 text-lg md:text-xl mb-3 md:mb-4">Preview</h3>` + screenshotsHtml : ''}
-        <div class="bg-gray-50 rounded-xl md:rounded-2xl p-5 md:p-6 border border-gray-100 mb-6 md:mb-8"><h3 class="font-bold text-gray-900 mb-2 md:mb-3 text-sm md:text-lg">About this app</h3><p class="text-gray-600 leading-relaxed whitespace-pre-line text-xs md:text-base">${app.description || 'No description provided.'}</p></div>
-        <div class="bg-white rounded-xl md:rounded-2xl border border-gray-200 shadow-sm overflow-hidden"><div class="bg-gray-50 px-5 md:px-6 py-3 md:py-4 border-b border-gray-200"><h3 class="font-bold text-gray-900 flex items-center gap-2 text-xs md:text-base"><i class="ph-fill ph-code text-blue-600"></i> Technical Information</h3></div><div class="p-5 md:p-6">${techHtml}</div></div>`;
-}
-
-function generateTechHtml(d) {
-    if(!d) return '<div class="text-gray-400 italic text-xs">No details.</div>';
-    const row = (k, v) => `<div class="flex justify-between py-1.5 md:py-2 border-b border-gray-50 text-xs md:text-sm"><span class="font-bold text-gray-700">${k}</span><span class="font-mono text-gray-600 text-right">${v || '-'}</span></div>`;
-    return `<div class="space-y-4 md:space-y-6"><div><div class="font-bold text-blue-800 text-[10px] md:text-xs uppercase mb-1 md:mb-2">Build</div>${row('Version Code', d.verCode)}${row('Min SDK', d.minSdk)}</div></div>`;
+        } else { container.innerHTML = '<div class="text-center py-20 text-red-500">App not found!</div>'; }
+    } catch (e) { container.innerHTML = '<div class="text-center py-20 text-red-500">Error loading data.</div>'; }
 }
 
 async function loadRecommendedApps(currentId) {
@@ -235,19 +239,22 @@ async function loadRecommendedApps(currentId) {
     if(!grid) return;
     try {
         const q = query(collection(db, "apps"), limit(6));
-        const snapshot = await getDocs(q);
+        const s = await getDocs(q);
         grid.innerHTML = '';
-        snapshot.forEach((doc) => {
-            if(doc.id !== currentId) {
-                const app = doc.data();
-                grid.innerHTML += `<div onclick="window.location.href='app-details.html?id=${doc.id}'" class="flex items-center gap-3 p-2 md:p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition border border-transparent hover:border-gray-100 group"><img src="${app.iconUrl}" class="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gray-100 object-cover shadow-sm"><div class="min-w-0 flex-1"><h4 class="font-bold text-gray-900 text-xs md:text-sm truncate group-hover:text-green-600">${app.name}</h4><div class="flex items-center gap-2 text-[10px] md:text-xs text-gray-500 mt-0.5"><span class="bg-gray-100 px-1.5 rounded">${app.size}</span><span>🔥 ${app.downloads || 0}</span></div></div></div>`;
+        s.forEach(d => {
+            if(d.id !== currentId) {
+                const a = d.data();
+                grid.innerHTML += `<div onclick="window.location.href='app-details.html?id=${d.id}'" class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer border border-transparent hover:border-gray-100"><img src="${a.iconUrl}" class="w-10 h-10 rounded-lg bg-gray-100"><div class="flex-1"><h4 class="font-bold text-xs truncate">${a.name}</h4><div class="text-[10px] text-gray-500">${a.size}</div></div></div>`;
             }
         });
-    } catch (e) { console.error(e); }
+    } catch(e) {}
 }
 window.trackDownload = (id) => updateDoc(doc(db, "apps", id), { downloads: increment(1) });
 
-// ADMIN & AUTH LOGIC
+// ==========================================
+// 5. ADMIN LOGIC (FIXED)
+// ==========================================
+
 export function initAdmin() {
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -259,6 +266,7 @@ export function initAdmin() {
             document.getElementById('dashboard').classList.add('hidden');
         }
     });
+
     if(document.getElementById('loginForm')) {
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -271,15 +279,15 @@ export function initAdmin() {
 async function loadAdminList() {
     const list = document.getElementById('adminAppList');
     if(!list) return;
-    list.innerHTML = '<li class="p-6 text-center text-gray-400 text-sm animate-pulse">Loading apps...</li>';
+    list.innerHTML = '<li class="p-6 text-center text-gray-400 text-sm">Loading...</li>';
     try {
-        const q = query(collection(db, "apps"));
+        const q = query(collection(db, "apps")); // Removed orderBy to be safe
         const snapshot = await getDocs(q);
         list.innerHTML = '';
         if (snapshot.empty) { list.innerHTML = '<li class="p-6 text-center text-gray-400 text-sm">No apps found.</li>'; return; }
         snapshot.forEach(doc => {
             const app = doc.data();
-            list.innerHTML += `<li class="p-4 bg-white hover:bg-gray-50 flex justify-between items-center transition border-b border-gray-100 last:border-0"><div class="flex items-center gap-4"><img src="${app.iconUrl}" class="w-10 h-10 rounded-lg shadow-sm object-cover border border-gray-200"><div><div class="font-bold text-gray-800 text-sm">${app.name}</div><div class="text-xs text-gray-500 font-mono">${app.packageName}</div></div></div><div class="flex gap-2"><button onclick="editApp('${doc.id}')" class="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-bold">Edit</button><button onclick="deleteApp('${doc.id}')" class="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-bold">Delete</button></div></li>`;
+            list.innerHTML += `<li class="p-4 bg-white hover:bg-gray-50 flex justify-between items-center border-b last:border-0"><div class="flex items-center gap-4"><img src="${app.iconUrl}" class="w-10 h-10 rounded bg-gray-100"><div><div class="font-bold text-sm">${app.name}</div><div class="text-xs text-gray-500">${app.packageName}</div></div></div><div class="flex gap-2"><button onclick="editApp('${doc.id}')" class="px-3 py-1 bg-blue-100 text-blue-600 rounded text-xs font-bold">Edit</button><button onclick="deleteApp('${doc.id}')" class="px-3 py-1 bg-red-100 text-red-600 rounded text-xs font-bold">Del</button></div></li>`;
         });
     } catch (e) { list.innerHTML = `<li class="p-6 text-center text-red-500 text-sm">Error: ${e.message}</li>`; }
 }
@@ -287,37 +295,20 @@ async function loadAdminList() {
 async function handleFormSubmit(e) {
     e.preventDefault();
     document.getElementById('uploadingScreen').classList.remove('hidden');
+    const fd = (id) => document.getElementById(id).value;
+    const fc = (id) => document.getElementById(id).checked;
+    
     const appData = {
-        name: document.getElementById('appName').value,
-        packageName: document.getElementById('packageName').value,
-        developer: document.getElementById('developer').value,
-        category: document.getElementById('category').value,
-        size: document.getElementById('size').value,
-        version: document.getElementById('version').value,
-        apkUrl: document.getElementById('apkUrl').value,
-        iconUrl: document.getElementById('iconUrl').value,
-        screenshots: document.getElementById('screenshots').value,
+        name: fd('appName'), packageName: fd('packageName'), developer: fd('developer'), category: fd('category'),
+        size: fd('size'), version: fd('version'), apkUrl: fd('apkUrl'), iconUrl: fd('iconUrl'),
+        screenshots: fd('screenshots'), description: "", // Add desc field in admin if needed
         techData: {
-            verCode: document.getElementById('t_verCode').value,
-            date: document.getElementById('t_date').value,
-            minSdk: document.getElementById('t_minSdk').value,
-            targetSdk: document.getElementById('t_targetSdk').value,
-            compileSdk: document.getElementById('t_compileSdk').value,
-            abi: document.getElementById('t_abi').value,
-            devices: document.getElementById('t_devices').value,
-            sha1: document.getElementById('t_sha1').value,
-            sha256: document.getElementById('t_sha256').value,
-            v1: document.getElementById('t_v1').checked,
-            v2: document.getElementById('t_v2').checked,
-            v3: document.getElementById('t_v3').checked,
-            v4: document.getElementById('t_v4').checked,
-            compress: document.getElementById('t_compress').value,
-            algo: document.getElementById('t_algo').value,
-            issuer: document.getElementById('t_issuer').value,
-            proguard: document.getElementById('t_proguard').value,
-            obfus: document.getElementById('t_obfus').value,
-            debug: document.getElementById('t_debug').value,
-            perms: document.getElementById('t_perms').value
+            verCode: fd('t_verCode'), date: fd('t_date'), compress: fd('t_compress'),
+            minSdk: fd('t_minSdk'), targetSdk: fd('t_targetSdk'), compileSdk: fd('t_compileSdk'),
+            abi: fd('t_abi'), devices: fd('t_devices'), sha1: fd('t_sha1'), sha256: fd('t_sha256'),
+            algo: fd('t_algo'), issuer: fd('t_issuer'), proguard: fd('t_proguard'), obfus: fd('t_obfus'),
+            debug: fd('t_debug'), perms: fd('t_perms'),
+            v1: fc('t_v1'), v2: fc('t_v2'), v3: fc('t_v3'), v4: fc('t_v4')
         },
         updatedAt: serverTimestamp()
     };
@@ -326,7 +317,7 @@ async function handleFormSubmit(e) {
         if (isEditMode && currentEditId) { await updateDoc(doc(db, "apps", currentEditId), appData); }
         else { appData.downloads = 0; appData.uploadedAt = serverTimestamp(); await addDoc(collection(db, "apps"), appData); }
         setTimeout(() => { document.getElementById('successScreen').classList.remove('hidden'); document.getElementById('uploadingScreen').classList.add('hidden'); loadAdminList(); }, 500);
-    } catch (error) { alert("Error: " + error.message); document.getElementById('uploadingScreen').classList.add('hidden'); }
+    } catch (error) { alert(error.message); document.getElementById('uploadingScreen').classList.add('hidden'); }
 }
 
 window.closeSuccessScreen = () => { document.getElementById('successScreen').classList.add('hidden'); window.resetForm(); }
@@ -334,13 +325,25 @@ window.deleteApp = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(
 window.editApp = async (id) => {
     const docSnap = await getDoc(doc(db, "apps", id));
     if (docSnap.exists()) {
-        const data = docSnap.data();
+        const d = docSnap.data();
+        const t = d.techData || {};
         isEditMode = true; currentEditId = id;
-        document.getElementById('appName').value = data.name; document.getElementById('packageName').value = data.packageName; document.getElementById('developer').value = data.developer; document.getElementById('category').value = data.category; document.getElementById('version').value = data.version; document.getElementById('size').value = data.size; document.getElementById('apkUrl').value = data.apkUrl; document.getElementById('iconUrl').value = data.iconUrl; document.getElementById('screenshots').value = data.screenshots;
-        const t = data.techData || {};
-        document.getElementById('t_verCode').value = t.verCode||''; document.getElementById('t_date').value = t.date||''; document.getElementById('t_minSdk').value = t.minSdk||''; document.getElementById('t_targetSdk').value = t.targetSdk||''; document.getElementById('t_compileSdk').value = t.compileSdk||''; document.getElementById('t_abi').value = t.abi||''; document.getElementById('t_devices').value = t.devices||''; document.getElementById('t_sha1').value = t.sha1||''; document.getElementById('t_sha256').value = t.sha256||''; document.getElementById('t_v1').checked = t.v1||false; document.getElementById('t_v2').checked = t.v2||false; document.getElementById('t_v3').checked = t.v3||false; document.getElementById('t_v4').checked = t.v4||false;
-        document.getElementById('uploadBtn').innerText = "Update App"; document.getElementById('formTitle').innerText = "Edit App"; window.scrollTo({ top: 0, behavior: 'smooth' });
+        const setVal = (eid, val) => { if(document.getElementById(eid)) document.getElementById(eid).value = val || ''; }
+        const setChk = (eid, val) => { if(document.getElementById(eid)) document.getElementById(eid).checked = val || false; }
+
+        setVal('appName', d.name); setVal('packageName', d.packageName); setVal('developer', d.developer);
+        setVal('category', d.category); setVal('version', d.version); setVal('size', d.size);
+        setVal('apkUrl', d.apkUrl); setVal('iconUrl', d.iconUrl); setVal('screenshots', d.screenshots);
+        
+        setVal('t_verCode', t.verCode); setVal('t_date', t.date); setVal('t_minSdk', t.minSdk);
+        setVal('t_targetSdk', t.targetSdk); setVal('t_compileSdk', t.compileSdk); setVal('t_abi', t.abi);
+        setVal('t_devices', t.devices); setVal('t_sha1', t.sha1); setVal('t_sha256', t.sha256);
+        setChk('t_v1', t.v1); setChk('t_v2', t.v2); setChk('t_v3', t.v3); setChk('t_v4', t.v4);
+
+        document.getElementById('uploadBtn').innerText = "Update App"; 
+        document.getElementById('formTitle').innerText = "Editing App";
+        document.getElementById('dashboard').scrollIntoView({behavior: 'smooth'});
     }
 };
-window.resetForm = () => { document.getElementById('uploadForm').reset(); isEditMode = false; currentEditId = null; document.getElementById('uploadBtn').innerText = "Save Data"; document.getElementById('formTitle').innerText = "Add New App"; };
+window.resetForm = () => { document.getElementById('uploadForm').reset(); isEditMode = false; currentEditId = null; document.getElementById('uploadBtn').innerText = "Save Data"; };
 window.logout = () => signOut(auth);
