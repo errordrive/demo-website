@@ -12,10 +12,10 @@
 
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.reload()">
+            <a href="index.html" class="flex items-center gap-2 cursor-pointer">
                 <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg shadow-green-200"><i class="ph-fill ph-android-logo"></i></div>
                 <span class="text-lg font-extrabold tracking-tight">APK<span class="text-green-600">Verse</span></span>
-            </div>
+            </a>
             <a href="admin.html" class="text-xs font-bold text-gray-500 hover:text-green-600 uppercase tracking-widest border px-3 py-1 rounded-full">Admin Login</a>
         </div>
     </nav>
@@ -41,21 +41,17 @@
         </div>
 
         <div id="loading" class="text-center py-20 hidden"><i class="ph ph-spinner animate-spin text-green-600 text-4xl"></i></div>
-        <div id="appGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+        
+        <div id="appGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
     </main>
 
     <footer class="bg-white border-t border-gray-100 py-8 mt-8 text-center text-sm text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
 
-    <div id="appModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
-            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-800 bg-white p-2 rounded-full shadow-sm"><i class="ph-bold ph-x text-xl"></i></button>
-            <div id="modalContent" class="p-6 md:p-8"></div>
-        </div>
-    </div>
-
     <script type="module">
         import { loadApps } from './app.js';
         let currentCat = 'All';
+        
+        // হোমপেজে অ্যাপ লোড করো
         document.addEventListener('DOMContentLoaded', () => loadApps());
 
         let timeout = null;
