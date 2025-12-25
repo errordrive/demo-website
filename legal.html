@@ -20,48 +20,28 @@
     <main class="max-w-4xl mx-auto px-4 py-10 flex-1 w-full">
         <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <h1 id="pageTitle" class="text-2xl font-extrabold text-gray-900 mb-6 border-b pb-4">Loading...</h1>
-            <div id="pageContent" class="prose prose-green max-w-none text-gray-600 text-sm leading-relaxed space-y-4">
-                </div>
+            <div id="pageContent" class="prose prose-green max-w-none text-gray-600 text-sm leading-relaxed space-y-4"></div>
         </div>
     </main>
 
-    <footer class="bg-white border-t border-gray-200 py-6 mt-8 text-center text-xs text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
+    <footer id="main-footer"></footer>
 
+    <script type="module" src="./app.js"></script>
     <script>
         const content = {
-            'dmca': {
-                title: 'DMCA Copyright Policy',
-                body: `<p>APKVerse respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act (DMCA), we will respond to claims of copyright infringement.</p>
-                       <h3 class="font-bold text-gray-900">Takedown Notice</h3>
-                       <p>If you believe that your copyrighted work has been copied in a way that constitutes copyright infringement and is accessible on this site, please notify us.</p>
-                       <p>Please send all DMCA notices to: <strong>dmca@apkverse.com</strong></p>`
-            },
-            'privacy': {
-                title: 'Privacy Policy',
-                body: `<p>Your privacy is important to us. It is APKVerse's policy to respect your privacy regarding any information we may collect from you across our website.</p>
-                       <h3 class="font-bold text-gray-900">Information We Collect</h3>
-                       <p>We only collect information about you if we have a reason to do so – for example, to provide our services, to communicate with you, or to make our services better.</p>`
-            },
-            'terms': {
-                title: 'Terms & Conditions',
-                body: `<p>By accessing the website at APKVerse, you are agreeing to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>`
-            },
-            'contact': {
-                title: 'Contact Us',
-                body: `<p>We'd love to hear from you! Whether you have a question about features, trials, pricing, need a demo, or anything else, our team is ready to answer all your questions.</p>
-                       <p>Email: <strong>support@apkverse.com</strong></p>`
-            }
+            'dmca': { title: 'DMCA Policy', body: '<p>APKVerse respects intellectual property...</p>' },
+            'privacy': { title: 'Privacy Policy', body: '<p>Your privacy is important to us...</p>' },
+            'terms': { title: 'Terms & Conditions', body: '<p>By using this site...</p>' },
+            'contact': { title: 'Contact Us', body: '<p>Email: support@apkverse.com</p>' },
+            'about': { title: 'About Us', body: '<p>APKVerse is your safe destination...</p>' }
         };
-
         const params = new URLSearchParams(window.location.search);
         const page = params.get('page');
-
         if(content[page]) {
             document.getElementById('pageTitle').innerText = content[page].title;
             document.getElementById('pageContent').innerHTML = content[page].body;
         } else {
-            document.getElementById('pageTitle').innerText = "Page Not Found";
-            document.getElementById('pageContent').innerHTML = "<p>The requested page does not exist.</p>";
+            document.getElementById('pageTitle').innerText = "404 Not Found";
         }
     </script>
 </body>
