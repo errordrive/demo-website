@@ -48,7 +48,6 @@ export async function loadApps(category = 'All', searchQuery = '') {
     } catch (e) { console.error(e); }
 }
 
-// 🟢 CARD CLICK -> NEW PAGE
 function renderAppCard(id, app, container) {
     const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random&size=128`;
 
@@ -80,28 +79,23 @@ function renderAppCard(id, app, container) {
 }
 
 // ==========================================
-// 2. DETAILS PAGE LOGIC (app-details.html)
+// 2. DETAILS PAGE LOGIC
 // ==========================================
 
 export async function loadAppDetails(id) {
     const container = document.getElementById('detailsContainer');
-    if(!container) return; // Not on details page
+    if(!container) return; 
 
     try {
         const docSnap = await getDoc(doc(db, "apps", id));
         if (docSnap.exists()) {
             const app = docSnap.data();
-            
-            // Render Main Details
             renderFullDetails(id, app, container);
-            
-            // Load Recommendations (Pass current ID to exclude it)
             loadRecommendedApps(id);
         } else {
             container.innerHTML = '<div class="text-center py-20 text-red-500">App not found!</div>';
         }
     } catch (e) {
-        console.error(e);
         container.innerHTML = '<div class="text-center py-20 text-red-500">Error loading app.</div>';
     }
 }
@@ -160,78 +154,61 @@ function renderFullDetails(id, app, container) {
     `;
 }
 
-// 🟢 RECOMMENDED APPS LOGIC
 async function loadRecommendedApps(currentId) {
     const grid = document.getElementById('recommendedGrid');
     if(!grid) return;
 
     try {
-        // Query: Sort by downloads, limit to 5
         const q = query(collection(db, "apps"), orderBy("downloads", "desc"), limit(6));
         const snapshot = await getDocs(q);
-        
         grid.innerHTML = '';
         let count = 0;
-
         snapshot.forEach((doc) => {
-            if(doc.id !== currentId && count < 5) { // Exclude current app
+            if(doc.id !== currentId && count < 5) {
                 const app = doc.data();
-                renderSmallCard(doc.id, app, grid);
+                const card = `
+                    <div onclick="window.location.href='app-details.html?id=${doc.id}'" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition border border-transparent hover:border-gray-100 group">
+                        <img src="${app.iconUrl}" class="w-12 h-12 rounded-lg bg-gray-100 object-cover shadow-sm">
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-bold text-gray-900 text-sm truncate group-hover:text-green-600 transition">${app.name}</h4>
+                            <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                                <span class="bg-gray-100 px-1.5 rounded">${app.size}</span>
+                                <span class="text-[10px]">🔥 ${app.downloads || 0} DLs</span>
+                            </div>
+                        </div>
+                        <button class="text-green-600 bg-green-50 p-2 rounded-full opacity-0 group-hover:opacity-100 transition"><i class="ph-bold ph-caret-right"></i></button>
+                    </div>
+                `;
+                grid.innerHTML += card;
                 count++;
             }
         });
-
         if(count === 0) grid.innerHTML = '<div class="text-gray-400 text-sm text-center">No other apps found.</div>';
-
     } catch (e) { console.error(e); }
 }
-
-function renderSmallCard(id, app, container) {
-    const card = `
-        <div onclick="window.location.href='app-details.html?id=${id}'" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition border border-transparent hover:border-gray-100 group">
-            <img src="${app.iconUrl}" class="w-12 h-12 rounded-lg bg-gray-100 object-cover shadow-sm">
-            <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-gray-900 text-sm truncate group-hover:text-green-600 transition">${app.name}</h4>
-                <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                    <span class="bg-gray-100 px-1.5 rounded">${app.size}</span>
-                    <span class="text-[10px]">🔥 ${app.downloads || 0} DLs</span>
-                </div>
-            </div>
-            <button class="text-green-600 bg-green-50 p-2 rounded-full opacity-0 group-hover:opacity-100 transition"><i class="ph-bold ph-caret-right"></i></button>
-        </div>
-    `;
-    container.innerHTML += card;
-}
-
-// ==========================================
-// HELPERS (Unchanged)
-// ==========================================
-
-function formatTechInfo(text) { /* Keep existing function */ return text; } // Simplified for brevity in this response, keep your existing logic
 
 function generateTechHtml(d) {
     if(!d) return '<div class="text-gray-400 italic">No details.</div>';
     const row = (k, v) => `<div class="flex justify-between py-2 border-b border-gray-50 text-sm"><span class="font-bold text-gray-700">${k}</span><span class="font-mono text-gray-600 text-right">${v || '-'}</span></div>`;
-    
     return `
         <div class="space-y-6">
             <div><div class="font-bold text-blue-800 text-xs uppercase mb-2">Build Info</div>${row('Version Code', d.verCode)}${row('Release Date', d.date)}${row('Compression', d.compress)}</div>
-            <div><div class="font-bold text-blue-800 text-xs uppercase mb-2">Environment</div>${row('Min SDK', d.minSdk)}${row('Target SDK', d.targetSdk)}</div>
+            <div><div class="font-bold text-blue-800 text-xs uppercase mb-2">Environment</div>${row('Min SDK', d.minSdk)}${row('Target SDK', d.targetSdk)}${row('Compile SDK', d.compileSdk)}</div>
             <div><div class="font-bold text-blue-800 text-xs uppercase mb-2">Architecture</div><div class="text-sm text-gray-600 mb-1"><span class="font-bold">ABI:</span> ${d.abi}</div>${row('Devices', d.devices)}</div>
             <div><div class="font-bold text-blue-800 text-xs uppercase mb-2">Signature</div>
-            <div class="flex gap-3 mb-2 text-xs"><span class="${d.v1?'text-green-600 font-bold':'text-gray-400'}">V1</span><span class="${d.v2?'text-green-600 font-bold':'text-gray-400'}">V2</span><span class="${d.v3?'text-green-600 font-bold':'text-gray-400'}">V3</span></div>
-            <div class="text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-2 border rounded">SHA-1: ${d.sha1 || 'N/A'}</div>
+            <div class="flex gap-3 mb-2 text-xs"><span class="${d.v1?'text-green-600 font-bold':'text-gray-400'}">V1</span><span class="${d.v2?'text-green-600 font-bold':'text-gray-400'}">V2</span><span class="${d.v3?'text-green-600 font-bold':'text-gray-400'}">V3</span><span class="${d.v4?'text-green-600 font-bold':'text-gray-400'}">V4</span></div>
+            <div class="text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-2 border rounded mb-2">SHA-1: ${d.sha1 || 'N/A'}</div>
+            <div class="text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-2 border rounded">SHA-256: ${d.sha256 || 'N/A'}</div>
             </div>
         </div>
     `;
 }
 
-// Global functions for tracking
 window.trackDownload = (id) => updateDoc(doc(db, "apps", id), { downloads: increment(1) });
 
-// ADMIN LOGIC (Keep existing admin logic inside initAdmin)
-let isEditMode = false;
-let currentEditId = null;
+// ==========================================
+// ADMIN LOGIC
+// ==========================================
 
 export function initAdmin() {
     onAuthStateChanged(auth, (user) => {
@@ -256,7 +233,82 @@ export function initAdmin() {
     if(uploadForm) uploadForm.addEventListener('submit', handleFormSubmit);
 }
 
-// Keep handleFormSubmit and loadAdminList exactly as they were in previous steps
-// (They are for Admin Panel, not affected by User View changes)
-async function handleFormSubmit(e) { /* Keep existing */ }
-async function loadAdminList() { /* Keep existing */ }
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    document.getElementById('uploadingScreen').classList.remove('hidden');
+    
+    const techData = {
+        verCode: document.getElementById('t_verCode').value,
+        date: document.getElementById('t_date').value,
+        compress: document.getElementById('t_compress').value,
+        minSdk: document.getElementById('t_minSdk').value,
+        targetSdk: document.getElementById('t_targetSdk').value,
+        compileSdk: document.getElementById('t_compileSdk').value,
+        abi: document.getElementById('t_abi').value,
+        devices: document.getElementById('t_devices').value,
+        v1: document.getElementById('t_v1').checked,
+        v2: document.getElementById('t_v2').checked,
+        v3: document.getElementById('t_v3').checked,
+        v4: document.getElementById('t_v4').checked,
+        algo: document.getElementById('t_algo').value,
+        sha1: document.getElementById('t_sha1').value,
+        sha256: document.getElementById('t_sha256').value,
+        issuer: document.getElementById('t_issuer').value,
+        proguard: document.getElementById('t_proguard').value,
+        obfus: document.getElementById('t_obfus').value,
+        debug: document.getElementById('t_debug').value,
+        perms: document.getElementById('t_perms').value
+    };
+
+    const appData = {
+        name: document.getElementById('appName').value,
+        packageName: document.getElementById('packageName').value,
+        developer: document.getElementById('developer').value,
+        category: document.getElementById('category').value,
+        size: document.getElementById('size').value,
+        version: document.getElementById('version').value,
+        apkUrl: document.getElementById('apkUrl').value,
+        iconUrl: document.getElementById('iconUrl').value,
+        screenshots: document.getElementById('screenshots').value,
+        techData: techData,
+        updatedAt: serverTimestamp()
+    };
+
+    try {
+        if (isEditMode && currentEditId) await updateDoc(doc(db, "apps", currentEditId), appData);
+        else { appData.downloads = 0; appData.uploadedAt = serverTimestamp(); await addDoc(collection(db, "apps"), appData); }
+        setTimeout(() => { document.getElementById('successScreen').classList.remove('hidden'); document.getElementById('uploadingScreen').classList.add('hidden'); loadAdminList(); }, 500);
+    } catch (error) { alert("Error: " + error.message); document.getElementById('uploadingScreen').classList.add('hidden'); }
+}
+
+async function loadAdminList() {
+    const list = document.getElementById('adminAppList');
+    list.innerHTML = 'Loading...';
+    const q = query(collection(db, "apps"), orderBy("uploadedAt", "desc"));
+    const snapshot = await getDocs(q);
+    list.innerHTML = '';
+    snapshot.forEach(doc => {
+        const app = doc.data();
+        list.innerHTML += `<li class="p-4 bg-gray-50 rounded flex justify-between mb-2 border">
+            <div class="flex items-center gap-3"><img src="${app.iconUrl}" onerror="this.src='https://via.placeholder.com/32'" class="w-10 h-10 rounded shadow object-cover"><div><div class="font-bold text-sm">${app.name}</div></div></div>
+            <div class="flex gap-2"><button onclick="editApp('${doc.id}')" class="px-3 py-1 bg-blue-100 text-blue-600 rounded text-xs font-bold">Edit</button><button onclick="deleteApp('${doc.id}')" class="px-3 py-1 bg-red-100 text-red-600 rounded text-xs font-bold">Del</button></div></li>`;
+    });
+}
+
+window.closeSuccessScreen = () => { document.getElementById('successScreen').classList.add('hidden'); document.getElementById('uploadForm').reset(); isEditMode = false; currentEditId = null; document.getElementById('uploadBtn').innerText = "Save App Data"; }
+window.deleteApp = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "apps", id)); loadAdminList(); }};
+window.editApp = async (id) => {
+    const docSnap = await getDoc(doc(db, "apps", id));
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        isEditMode = true; currentEditId = id;
+        document.getElementById('appName').value = data.name; document.getElementById('packageName').value = data.packageName; document.getElementById('developer').value = data.developer; document.getElementById('category').value = data.category; document.getElementById('version').value = data.version; document.getElementById('size').value = data.size; document.getElementById('apkUrl').value = data.apkUrl; document.getElementById('iconUrl').value = data.iconUrl; document.getElementById('screenshots').value = data.screenshots || '';
+        
+        // Fill Tech
+        const t = data.techData || {};
+        document.getElementById('t_verCode').value = t.verCode||''; document.getElementById('t_date').value = t.date||''; document.getElementById('t_compress').value = t.compress||'Enabled'; document.getElementById('t_minSdk').value = t.minSdk||''; document.getElementById('t_targetSdk').value = t.targetSdk||''; document.getElementById('t_compileSdk').value = t.compileSdk||''; document.getElementById('t_abi').value = t.abi||''; document.getElementById('t_devices').value = t.devices||''; document.getElementById('t_v1').checked = t.v1||false; document.getElementById('t_v2').checked = t.v2||false; document.getElementById('t_v3').checked = t.v3||false; document.getElementById('t_v4').checked = t.v4||false; document.getElementById('t_algo').value = t.algo||''; document.getElementById('t_sha1').value = t.sha1||''; document.getElementById('t_sha256').value = t.sha256||''; document.getElementById('t_issuer').value = t.issuer||''; document.getElementById('t_proguard').value = t.proguard||'Enabled'; document.getElementById('t_obfus').value = t.obfus||'Enabled'; document.getElementById('t_debug').value = t.debug||'False'; document.getElementById('t_perms').value = t.perms||'';
+
+        document.getElementById('uploadBtn').innerText = "Update App"; document.getElementById('dashboard').scrollIntoView();
+    }
+};
+window.logout = () => signOut(auth);
