@@ -2,7 +2,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, increment, serverTimestamp, getDoc, limit } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-// FIREBASE CONFIG
+// ==========================================
+// 🔥 FIREBASE CONFIGURATION
+// ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBjiNy8apBFdLQOAiG1nCtv94DfaRwZEuM",
   authDomain: "apkverse-bjyjs.firebaseapp.com",
@@ -16,29 +18,56 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// GLOBAL VARIABLES
+// Global State
 let isEditMode = false;
 let currentEditId = null;
 
 // ==========================================
-// 🔥 GLOBAL INITIALIZATION (Footer & Apps)
+// 🔥 GLOBAL INITIALIZATION
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadGlobalFooter(); // Load footer on ALL pages
+    loadGlobalFooter(); // 1. Load Footer everywhere
     
-    // Load apps only if on homepage
+    // 2. Load Slider if present
+    if(document.getElementById('heroSlider')) {
+        initSlider();
+    }
+
+    // 3. Load Apps if on Home Page
     if(document.getElementById('appGrid')) {
         loadApps();
     }
     
-    // Load admin if on admin page
+    // 4. Init Admin if on Admin Page
     if(document.getElementById('loginScreen')) {
         initAdmin();
     }
 });
 
-// 🔥 DYNAMIC FOOTER SYSTEM 🔥
+// ==========================================
+// 1. SLIDER LOGIC (NEW)
+// ==========================================
+
+export function initSlider() {
+    const track = document.getElementById('heroSlider');
+    if (!track) return;
+
+    let index = 0;
+    const slides = track.children;
+    const totalSlides = slides.length;
+
+    // Auto Play Slider
+    setInterval(() => {
+        index = (index + 1) % totalSlides;
+        track.style.transform = `translateX(-${index * 100}%)`;
+    }, 4000); // 4 Seconds delay
+}
+
+// ==========================================
+// 2. DYNAMIC FOOTER LOGIC
+// ==========================================
+
 function loadGlobalFooter() {
     const footerContainer = document.getElementById('main-footer');
     if (!footerContainer) return;
@@ -52,12 +81,11 @@ function loadGlobalFooter() {
                         <span class="text-lg font-bold">APK<span class="text-green-600">Verse</span></span>
                     </div>
                     <p class="text-xs text-gray-500 leading-relaxed mb-4">
-                        APKVerse is your #1 destination for safe, secure, and verified Android APKs. We ensure a seamless download experience without the hassle.
+                        APKVerse is your trusted source for secure Android APK downloads. Verified, fast, and free.
                     </p>
                     <div class="flex gap-3">
                         <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-blue-600 hover:text-white transition"><i class="ph-fill ph-facebook-logo"></i></a>
                         <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-sky-500 hover:text-white transition"><i class="ph-fill ph-telegram-logo"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition"><i class="ph-fill ph-x-logo"></i></a>
                     </div>
                 </div>
 
@@ -65,46 +93,45 @@ function loadGlobalFooter() {
                     <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Discover</h4>
                     <ul class="space-y-2 text-xs text-gray-500 font-medium">
                         <li><a href="index.html" class="hover:text-green-600 transition">Home</a></li>
-                        <li><a href="index.html" onclick="filterCategory('Games')" class="hover:text-green-600 transition">Popular Games</a></li>
-                        <li><a href="index.html" onclick="filterCategory('Social')" class="hover:text-green-600 transition">Social Apps</a></li>
-                        <li><a href="index.html" onclick="filterCategory('Tools')" class="hover:text-green-600 transition">Productivity Tools</a></li>
+                        <li><a href="index.html" onclick="filterCategory('Games')" class="hover:text-green-600 transition">Games</a></li>
+                        <li><a href="index.html" onclick="filterCategory('Social')" class="hover:text-green-600 transition">Social</a></li>
+                        <li><a href="index.html" onclick="filterCategory('Tools')" class="hover:text-green-600 transition">Tools</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Legal & Support</h4>
+                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Legal</h4>
                     <ul class="space-y-2 text-xs text-gray-500 font-medium">
                         <li><a href="legal.html?page=about" class="hover:text-green-600 transition">About Us</a></li>
-                        <li><a href="legal.html?page=contact" class="hover:text-green-600 transition">Contact Us</a></li>
+                        <li><a href="legal.html?page=contact" class="hover:text-green-600 transition">Contact</a></li>
                         <li><a href="legal.html?page=privacy" class="hover:text-green-600 transition">Privacy Policy</a></li>
-                        <li><a href="legal.html?page=dmca" class="hover:text-red-500 transition">DMCA Disclaimer</a></li>
-                        <li><a href="legal.html?page=terms" class="hover:text-green-600 transition">Terms of Service</a></li>
+                        <li><a href="legal.html?page=dmca" class="hover:text-red-500 transition">DMCA</a></li>
+                        <li><a href="legal.html?page=terms" class="hover:text-green-600 transition">Terms</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Safety First</h4>
+                    <h4 class="font-bold text-gray-900 text-sm mb-4 uppercase tracking-wider">Security</h4>
                     <div class="bg-green-50 border border-green-100 p-4 rounded-xl">
                         <div class="flex items-center gap-2 mb-2 text-green-700 font-bold text-xs">
-                            <i class="ph-fill ph-shield-check text-lg"></i> 100% Secure
+                            <i class="ph-fill ph-shield-check text-lg"></i> Verified Safe
                         </div>
                         <p class="text-[10px] text-green-800 leading-tight">
-                            Every APK file is scanned for viruses and malware before being listed. Your security is our priority.
+                            All uploads are manually checked for malware to ensure your safety.
                         </p>
                     </div>
                 </div>
             </div>
             
-            <div class="max-w-7xl mx-auto px-4 border-t border-gray-100 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="max-w-7xl mx-auto px-4 border-t border-gray-100 pt-6 text-center">
                 <p class="text-[10px] text-gray-400">&copy; 2025 APKVerse. All rights reserved.</p>
-                <p class="text-[10px] text-gray-300">Android is a trademark of Google LLC.</p>
             </div>
         </div>
     `;
 }
 
 // ==========================================
-// 1. HOME PAGE LOGIC
+// 3. HOME PAGE APPS LOGIC
 // ==========================================
 
 export async function loadApps(category = 'All', searchQuery = '') {
@@ -116,7 +143,8 @@ export async function loadApps(category = 'All', searchQuery = '') {
     loading.classList.remove('hidden');
 
     try {
-        const q = query(collection(db, "apps"), orderBy("uploadedAt", "desc"));
+        // Using simple query to avoid index errors
+        const q = query(collection(db, "apps"));
         const snapshot = await getDocs(q);
         loading.classList.add('hidden');
         
@@ -138,29 +166,36 @@ export async function loadApps(category = 'All', searchQuery = '') {
 
 function renderAppCard(id, app, container) {
     const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random&size=128`;
+    
+    // Responsive Card Design
     const card = `
         <div onclick="window.location.href='app-details.html?id=${id}'" class="group bg-white rounded-xl md:rounded-2xl p-3 md:p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 cursor-pointer h-full flex flex-col items-center text-center relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-b from-transparent to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
             <div class="relative z-10 mb-2 md:mb-3">
                 <img src="${app.iconUrl}" onerror="this.src='${fallbackImage}'" alt="${app.name}" class="w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl shadow-sm object-cover bg-gray-50 border border-gray-100 group-hover:scale-105 transition-transform duration-300">
             </div>
+
             <div class="w-full relative z-10 flex flex-col items-center flex-1">
-                <h3 class="font-bold text-gray-800 text-xs md:text-base leading-tight line-clamp-2 h-8 md:h-10 flex items-center justify-center group-hover:text-green-600 transition-colors">${app.name}</h3>
+                <h3 class="font-bold text-gray-800 text-xs md:text-base leading-tight line-clamp-2 h-8 md:h-10 flex items-center justify-center group-hover:text-green-600 transition-colors" title="${app.name}">${app.name}</h3>
                 <p class="hidden md:block text-[10px] text-gray-400 mt-1 truncate w-full">${app.developer || 'Unknown'}</p>
                 <div class="flex items-center gap-1 md:gap-2 mt-2 text-[9px] md:text-[10px] text-gray-500 font-medium">
                     <span class="bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">v${app.version}</span>
                     <span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">${app.size}</span>
                 </div>
             </div>
+
             <div class="mt-3 w-full relative z-10">
-                <button class="w-full flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-white bg-green-600 py-2 md:py-2.5 rounded-lg md:rounded-xl shadow-sm group-hover:bg-green-700 transition-colors">Download</button>
+                <button class="w-full flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-white bg-green-600 py-2 md:py-2.5 rounded-lg md:rounded-xl shadow-sm group-hover:bg-green-700 transition-colors">
+                    Download <i class="ph-bold ph-download-simple hidden md:inline"></i>
+                </button>
             </div>
         </div>`;
     container.innerHTML += card;
 }
 
 // ==========================================
-// 2. DETAILS PAGE LOGIC
+// 4. APP DETAILS LOGIC
 // ==========================================
 
 export async function loadAppDetails(id) {
@@ -188,7 +223,7 @@ function renderFullDetails(id, app, container) {
         }
     }
     const techHtml = generateTechHtml(app.techData);
-    const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random&size=128`;
+    const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}`;
 
     container.innerHTML = `
         <div class="flex flex-col md:flex-row gap-6 md:gap-8 mb-6 md:mb-8 items-center md:items-start border-b border-gray-100 pb-6 md:pb-8">
@@ -239,7 +274,7 @@ async function loadRecommendedApps(currentId) {
 window.trackDownload = (id) => updateDoc(doc(db, "apps", id), { downloads: increment(1) });
 
 // ==========================================
-// 3. ADMIN LOGIC
+// 5. ADMIN LOGIC
 // ==========================================
 
 export function initAdmin() {
@@ -265,12 +300,13 @@ export function initAdmin() {
     if(uploadForm) uploadForm.addEventListener('submit', handleFormSubmit);
 }
 
+// Fixed Admin List Loader
 async function loadAdminList() {
     const list = document.getElementById('adminAppList');
     if(!list) return;
     list.innerHTML = '<li class="p-6 text-center text-gray-400 text-sm animate-pulse">Loading apps...</li>';
     try {
-        const q = query(collection(db, "apps"), orderBy("uploadedAt", "desc"));
+        const q = query(collection(db, "apps")); // No orderBy to fix index issue
         const snapshot = await getDocs(q);
         list.innerHTML = '';
         if (snapshot.empty) { list.innerHTML = '<li class="p-6 text-center text-gray-400 text-sm">No apps found.</li>'; return; }
@@ -329,7 +365,6 @@ async function handleFormSubmit(e) {
     } catch (error) { alert("Error: " + error.message); document.getElementById('uploadingScreen').classList.add('hidden'); }
 }
 
-// Global scope
 window.closeSuccessScreen = () => { document.getElementById('successScreen').classList.add('hidden'); window.resetForm(); }
 window.deleteApp = async (id) => { if(confirm("Delete this app?")) { await deleteDoc(doc(db, "apps", id)); loadAdminList(); }};
 window.editApp = async (id) => {
