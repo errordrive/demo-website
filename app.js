@@ -2,10 +2,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, increment, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
+// YOUR CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBjiNy8apBFdLQOAiG1nCtv94DfaRwZEuM",
   authDomain: "apkverse-bjyjs.firebaseapp.com",
   projectId: "apkverse-bjyjs",
+  storageBucket: "apkverse-bjyjs.firebasestorage.app",
   messagingSenderId: "433058399647",
   appId: "1:433058399647:web:80aae884dbbd0aff94e9aa",
   measurementId: "G-6HXXD1W0KN"
@@ -44,6 +46,7 @@ export async function loadApps(category = 'All', searchQuery = '') {
             const data = doc.data();
             const matchesCategory = category === 'All' || data.category === category;
             const matchesSearch = searchQuery === '' || data.name.toLowerCase().includes(searchQuery.toLowerCase());
+            
             if (matchesCategory && matchesSearch) {
                 hasResults = true;
                 renderAppCard(doc.id, data, grid);
@@ -66,7 +69,7 @@ function renderAppCard(id, app, container) {
                 </div>
             </div>
             <div class="mt-auto pt-3 border-t border-gray-50 flex justify-between items-center text-xs text-gray-500">
-                <span>${app.size}</span>
+                <span>${app.size} MB</span>
                 <span class="text-green-600 font-bold">Download</span>
             </div>
         </div>
@@ -74,55 +77,44 @@ function renderAppCard(id, app, container) {
     container.innerHTML += card;
 }
 
-// GENERATE OLD STYLE HTML FROM DATA OBJECT
-function generateTechHtml(d) {
-    if(!d) return '<div class="text-gray-400 italic">No details.</div>';
-    
-    // Helper for rows
-    const row = (k, v) => `<div class="flex justify-between py-1 border-b border-gray-50 text-xs"><span class="font-bold text-gray-800">${k}:</span><span class="font-mono text-gray-600 text-right">${v || '-'}</span></div>`;
-    
-    return `
-        <div class="space-y-4">
-            <div>
-                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Build Info</div>
-                ${row('Version Code', d.verCode)}
-                ${row('Release Date', d.date)}
-                ${row('Compression', d.compress)}
-            </div>
+// FORMATTER (Bold Key, Normal Value)
+function formatTechInfo(text) {
+    if (!text) return '';
+
+    return text.split('\n').map(line => {
+        const cleanLine = line.trim();
+        if (!cleanLine) return '<div class="h-2"></div>'; 
+
+        // Header
+        if (cleanLine.endsWith(':') && !cleanLine.includes(': ')) {
+            return `
+                <div class="mt-4 mb-1 pb-1 border-b border-gray-200">
+                    <span class="text-sm font-bold text-blue-900 uppercase tracking-wide">${cleanLine.replace(':','')}</span>
+                </div>`;
+        }
+
+        // Key: Value
+        if (cleanLine.includes(':')) {
+            const parts = cleanLine.split(':');
+            const key = parts[0].trim();
+            const val = parts.slice(1).join(':').trim();
             
-            <div>
-                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Android Environment</div>
-                ${row('Min SDK', d.minSdk)}
-                ${row('Target SDK', d.targetSdk)}
-                ${row('Compile SDK', d.compileSdk)}
-            </div>
+            if(!val) return `<div class="font-bold text-gray-800 mt-2 text-xs">${key}</div>`;
 
-            <div>
-                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Architecture & Device</div>
-                <div class="text-xs text-gray-600 mb-1"><span class="font-bold">ABI:</span> ${d.abi}</div>
-                ${row('Devices', d.devices)}
-            </div>
+            return `
+                <div class="flex justify-between py-1 border-b border-gray-50 text-xs items-start">
+                    <span class="font-bold text-gray-700 min-w-[140px]">${key}:</span>
+                    <span class="text-gray-600 text-right flex-1 break-words">${val}</span>
+                </div>`;
+        }
+        
+        // List Item
+        if (cleanLine.startsWith('-')) {
+            return `<div class="text-xs text-gray-600 pl-4 py-0.5 font-mono text-[11px]">• ${cleanLine.replace('-','').trim()}</div>`;
+        }
 
-            <div>
-                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Signature</div>
-                ${row('Scheme V1', d.v1 ? 'Yes' : 'No')}
-                ${row('Scheme V2', d.v2 ? 'Yes' : 'No')}
-                ${row('Scheme V3', d.v3 ? 'Yes' : 'No')}
-                <div class="mt-1 text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-1 border rounded mb-1">SHA-1: ${d.sha1 || 'N/A'}</div>
-                <div class="mt-1 text-[10px] text-gray-500 break-all font-mono bg-gray-50 p-1 border rounded">SHA-256: ${d.sha256 || 'N/A'}</div>
-            </div>
-
-            <div>
-                <div class="font-bold text-blue-800 text-xs uppercase mb-1">Security & Permissions</div>
-                ${row('ProGuard', d.proguard)}
-                ${row('Debuggable', d.debug)}
-                <div class="mt-2 text-xs text-gray-600">
-                    <span class="font-bold">Permissions:</span>
-                    <p class="font-mono text-[10px] mt-1">${d.perms || 'None'}</p>
-                </div>
-            </div>
-        </div>
-    `;
+        return `<div class="text-xs text-gray-500">${cleanLine}</div>`;
+    }).join('');
 }
 
 window.openAppModal = async (id) => {
@@ -138,10 +130,12 @@ window.openAppModal = async (id) => {
         let screenshotsHtml = '';
         if(app.screenshots) {
             const shots = app.screenshots.split(',');
-            screenshotsHtml = `<div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar mb-6">` + shots.map(url => `<img src="${url.trim()}" class="h-48 rounded-lg shadow-sm border bg-gray-50">`).join('') + `</div>`;
+            screenshotsHtml = `<div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar mb-6">` + 
+                shots.map(url => `<img src="${url.trim()}" class="h-48 rounded-lg shadow-sm border bg-gray-50">`).join('') + 
+                `</div>`;
         }
 
-        const techHtml = generateTechHtml(app.techData);
+        const techInfoHtml = formatTechInfo(app.techInfo);
 
         content.innerHTML = `
             <div class="flex flex-col md:flex-row gap-6 mb-6">
@@ -152,19 +146,30 @@ window.openAppModal = async (id) => {
                     <p class="text-xs text-gray-400 font-mono mb-3">${app.packageName}</p>
                     <div class="flex justify-center md:justify-start gap-3 text-sm">
                         <span class="bg-gray-100 px-3 py-1 rounded-lg">v${app.version}</span>
-                        <span class="bg-gray-100 px-3 py-1 rounded-lg">${app.size}</span>
+                        <span class="bg-gray-100 px-3 py-1 rounded-lg">${app.size} MB</span>
                     </div>
                 </div>
             </div>
-            <a href="${app.apkUrl}" target="_blank" onclick="trackDownload('${id}')" class="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1 mb-8"><i class="ph-bold ph-download-simple text-xl"></i> Download APK</a>
+
+            <a href="${app.apkUrl}" target="_blank" onclick="trackDownload('${id}')" 
+               class="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-green-200 transition transform hover:-translate-y-1 mb-8">
+               <i class="ph-bold ph-download-simple text-xl"></i> Download APK
+            </a>
+
             ${screenshotsHtml ? `<h3 class="font-bold text-gray-900 mb-3">Preview</h3>` + screenshotsHtml : ''}
-            
-            <div class="flex border-b mb-4">
-                <button onclick="switchTab('tech')" id="tab-tech" class="px-4 py-2 text-sm font-bold text-green-600 border-b-2 border-green-600">Technical Specs</button>
+
+            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 mb-6">
+                <h3 class="font-bold text-gray-900 mb-2">Description</h3>
+                <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">${app.description || 'No description.'}</p>
             </div>
-            
-            <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-                ${techHtml}
+
+            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <h3 class="font-bold text-gray-900 mb-4 pb-2 border-b flex items-center gap-2">
+                    <i class="ph-fill ph-code text-blue-600"></i> Technical Specs
+                </h3>
+                <div class="space-y-0.5">
+                    ${techInfoHtml || '<div class="text-gray-400 italic text-sm">No technical details available.</div>'}
+                </div>
             </div>
         `;
     }
@@ -174,7 +179,7 @@ window.closeModal = () => document.getElementById('appModal').classList.add('hid
 window.trackDownload = (id) => updateDoc(doc(db, "apps", id), { downloads: increment(1) });
 
 // ==========================================
-// ADMIN LOGIC
+// ADMIN: SAVE DATA
 // ==========================================
 
 export function initAdmin() {
@@ -207,30 +212,6 @@ async function handleFormSubmit(e) {
     const screen = document.getElementById('uploadingScreen');
     screen.classList.remove('hidden');
 
-    const techData = {
-        verCode: document.getElementById('t_verCode').value,
-        date: document.getElementById('t_date').value,
-        compress: document.getElementById('t_compress').value,
-        minSdk: document.getElementById('t_minSdk').value,
-        targetSdk: document.getElementById('t_targetSdk').value,
-        compileSdk: document.getElementById('t_compileSdk').value,
-        abi: document.getElementById('t_abi').value,
-        devices: document.getElementById('t_devices').value,
-        multi: document.getElementById('t_multi').value,
-        v1: document.getElementById('t_v1').checked,
-        v2: document.getElementById('t_v2').checked,
-        v3: document.getElementById('t_v3').checked,
-        v4: document.getElementById('t_v4').checked,
-        algo: document.getElementById('t_algo').value,
-        sha1: document.getElementById('t_sha1').value, // ADDED
-        sha256: document.getElementById('t_sha256').value,
-        issuer: document.getElementById('t_issuer').value,
-        proguard: document.getElementById('t_proguard').value,
-        obfus: document.getElementById('t_obfus').value,
-        debug: document.getElementById('t_debug').value,
-        perms: document.getElementById('t_perms').value
-    };
-
     const appData = {
         name: document.getElementById('appName').value,
         packageName: document.getElementById('packageName').value,
@@ -238,10 +219,11 @@ async function handleFormSubmit(e) {
         category: document.getElementById('category').value,
         size: document.getElementById('size').value,
         version: document.getElementById('version').value,
-        iconUrl: document.getElementById('iconUrl').value,
+        description: document.getElementById('description').value,
         apkUrl: document.getElementById('apkUrl').value,
+        iconUrl: document.getElementById('iconUrl').value, 
         screenshots: document.getElementById('screenshots').value,
-        techData: techData,
+        techInfo: document.getElementById('techInfo').value, 
         updatedAt: serverTimestamp()
     };
     
@@ -273,15 +255,22 @@ async function loadAdminList() {
     const q = query(collection(db, "apps"), orderBy("uploadedAt", "desc"));
     const snapshot = await getDocs(q);
     list.innerHTML = '';
+    
     snapshot.forEach(doc => {
         const app = doc.data();
         list.innerHTML += `
             <li class="p-4 bg-gray-50 rounded flex justify-between items-center mb-2 border border-gray-100">
                 <div class="flex items-center gap-3">
-                    <img src="${app.iconUrl}" class="w-10 h-10 rounded shadow-sm object-cover">
-                    <div><div class="font-bold text-gray-800 text-sm">${app.name}</div><div class="text-xs text-gray-500">${app.version}</div></div>
+                    <img src="${app.iconUrl}" onerror="this.src='https://via.placeholder.com/32'" class="w-10 h-10 rounded shadow-sm object-cover">
+                    <div>
+                        <div class="font-bold text-gray-800 text-sm">${app.name}</div>
+                        <div class="text-xs text-gray-500">${app.version}</div>
+                    </div>
                 </div>
-                <div class="flex gap-2"><button onclick="editApp('${doc.id}')" class="px-3 py-1 bg-blue-100 text-blue-600 rounded text-xs font-bold">Edit</button><button onclick="deleteApp('${doc.id}')" class="px-3 py-1 bg-red-100 text-red-600 rounded text-xs font-bold">Del</button></div>
+                <div class="flex gap-2">
+                    <button onclick="editApp('${doc.id}')" class="px-3 py-1 bg-blue-100 text-blue-600 rounded text-xs font-bold">Edit</button>
+                    <button onclick="deleteApp('${doc.id}')" class="px-3 py-1 bg-red-100 text-red-600 rounded text-xs font-bold">Del</button>
+                </div>
             </li>`;
     });
 }
@@ -290,7 +279,7 @@ window.closeSuccessScreen = () => {
     document.getElementById('successScreen').classList.add('hidden');
     document.getElementById('uploadForm').reset();
     isEditMode = false; currentEditId = null;
-    document.getElementById('uploadBtn').innerText = "Save App Data";
+    document.getElementById('uploadBtn').innerText = "Publish App";
 }
 
 window.deleteApp = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "apps", id)); loadAdminList(); }};
@@ -307,33 +296,11 @@ window.editApp = async (id) => {
         document.getElementById('category').value = data.category;
         document.getElementById('size').value = data.size;
         document.getElementById('version').value = data.version;
+        document.getElementById('description').value = data.description;
         document.getElementById('apkUrl').value = data.apkUrl;
         document.getElementById('iconUrl').value = data.iconUrl;
         document.getElementById('screenshots').value = data.screenshots || '';
-
-        // Fill Tech Specs
-        const t = data.techData || {};
-        document.getElementById('t_verCode').value = t.verCode || '';
-        document.getElementById('t_date').value = t.date || '';
-        document.getElementById('t_compress').value = t.compress || 'Enabled';
-        document.getElementById('t_minSdk').value = t.minSdk || '';
-        document.getElementById('t_targetSdk').value = t.targetSdk || '';
-        document.getElementById('t_compileSdk').value = t.compileSdk || '';
-        document.getElementById('t_abi').value = t.abi || '';
-        document.getElementById('t_devices').value = t.devices || '';
-        document.getElementById('t_multi').value = t.multi || '';
-        document.getElementById('t_v1').checked = t.v1 || false;
-        document.getElementById('t_v2').checked = t.v2 || false;
-        document.getElementById('t_v3').checked = t.v3 || false;
-        document.getElementById('t_v4').checked = t.v4 || false;
-        document.getElementById('t_algo').value = t.algo || '';
-        document.getElementById('t_sha1').value = t.sha1 || '';
-        document.getElementById('t_sha256').value = t.sha256 || '';
-        document.getElementById('t_issuer').value = t.issuer || '';
-        document.getElementById('t_proguard').value = t.proguard || 'Enabled';
-        document.getElementById('t_obfus').value = t.obfus || 'Enabled';
-        document.getElementById('t_debug').value = t.debug || 'False';
-        document.getElementById('t_perms').value = t.perms || '';
+        document.getElementById('techInfo').value = data.techInfo || '';
 
         document.getElementById('uploadBtn').innerText = "Update App";
         document.getElementById('dashboard').scrollIntoView();
