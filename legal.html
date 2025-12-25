@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information - APKVerse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-2">
+            <a href="index.html" class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition">
+                <i class="ph-bold ph-arrow-left text-xl"></i> <span class="font-bold">Back</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-10 flex-1 w-full">
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <h1 id="pageTitle" class="text-3xl font-extrabold text-gray-900 mb-6">Loading...</h1>
+            <div id="pageContent" class="prose prose-green max-w-none text-gray-600 text-sm leading-relaxed">
+                </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-6 mt-8 text-center text-xs text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
+
+    <script>
+        // Content Data
+        const content = {
+            'privacy': {
+                title: 'Privacy Policy',
+                body: `<p>Welcome to APKVerse. Your privacy is important to us.</p>
+                       <h3 class="font-bold text-gray-800 mt-4 mb-2">1. Data Collection</h3>
+                       <p>We do not collect personal data unless you provide it voluntarily via contact forms. We may use cookies for site functionality.</p>
+                       <h3 class="font-bold text-gray-800 mt-4 mb-2">2. Third Party Links</h3>
+                       <p>Our site contains links to other websites. We are not responsible for their privacy practices.</p>`
+            },
+            'terms': {
+                title: 'Terms & Conditions',
+                body: `<p>By using APKVerse, you agree to these terms.</p>
+                       <h3 class="font-bold text-gray-800 mt-4 mb-2">Usage</h3>
+                       <p>You agree not to use this site for any illegal purposes. We host links to APK files; we do not own the apps unless stated.</p>`
+            },
+            'dmca': {
+                title: 'DMCA / Copyright',
+                body: `<p>APKVerse respects intellectual property rights.</p>
+                       <p>If you believe your work has been infringed, please contact us with proof, and we will remove the content immediately.</p>`
+            },
+            'contact': {
+                title: 'Contact Us',
+                body: `<p>Have questions or suggestions? Reach out to us:</p>
+                       <ul class="list-disc pl-5 mt-2">
+                           <li>Email: <a href="mailto:support@apkverse.com" class="text-green-600 underline">support@apkverse.com</a></li>
+                           <li>Telegram: @APKVerseSupport</li>
+                       </ul>`
+            },
+            'about': {
+                title: 'About Us',
+                body: `<p>APKVerse is your safe destination for Android APKs.</p>
+                       <p>We verify files before sharing links to ensure a secure experience. Our goal is to provide a clean, fast, and simple app store alternative.</p>`
+            },
+            'disclaimer': {
+                title: 'Disclaimer',
+                body: `<p>APKVerse is not associated or affiliated with Google, Google Play or Android in any way.</p>
+                       <p>Android is a trademark of Google Inc. All the apps & games are property and trademark of their respective developer or publisher.</p>`
+            }
+        };
+
+        // Load Content based on URL
+        const params = new URLSearchParams(window.location.search);
+        const page = params.get('page');
+
+        if(content[page]) {
+            document.getElementById('pageTitle').innerText = content[page].title;
+            document.getElementById('pageContent').innerHTML = content[page].body;
+        } else {
+            document.getElementById('pageTitle').innerText = "Page Not Found";
+            document.getElementById('pageContent').innerHTML = "<p>The requested information is not available.</p>";
+        }
+    </script>
+</body>
+</html>
