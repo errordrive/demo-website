@@ -9,7 +9,6 @@
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; } 
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        /* Dropdown Animation */
         .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .submenu.open { max-height: 500px; }
     </style>
@@ -37,12 +36,10 @@
             <span class="text-lg font-extrabold text-gray-800">Menu</span>
             <button onclick="toggleMenu()" class="text-gray-500 hover:text-red-500 text-xl"><i class="ph-bold ph-x"></i></button>
         </div>
-
         <div class="p-4 space-y-2">
             <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-green-600 font-medium text-gray-700 transition">
                 <i class="ph-bold ph-house text-lg"></i> Home
             </a>
-
             <div>
                 <button onclick="toggleSubMenu('appsSub')" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition group">
                     <span class="flex items-center gap-3"><i class="ph-bold ph-squares-four text-lg"></i> Apps</span>
@@ -52,11 +49,8 @@
                     <button onclick="filterCategory('Social'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Social</button>
                     <button onclick="filterCategory('Tools'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Tools</button>
                     <button onclick="filterCategory('Productivity'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Productivity</button>
-                    <button onclick="filterCategory('Communication'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Communication</button>
-                    <button onclick="filterCategory('Video Players'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Video Players</button>
                 </div>
             </div>
-
             <div>
                 <button onclick="toggleSubMenu('gamesSub')" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition group">
                     <span class="flex items-center gap-3"><i class="ph-bold ph-game-controller text-lg"></i> Games</span>
@@ -66,18 +60,11 @@
                     <button onclick="filterCategory('Action'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Action</button>
                     <button onclick="filterCategory('Arcade'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Arcade</button>
                     <button onclick="filterCategory('Racing'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Racing</button>
-                    <button onclick="filterCategory('Simulation'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Simulation</button>
                 </div>
             </div>
-
             <div class="border-t border-gray-100 my-4"></div>
-
-            <a href="legal.html?page=dmca" class="flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 hover:text-red-600 font-medium text-gray-700 transition">
-                <i class="ph-bold ph-warning-circle text-lg"></i> DMCA Policy
-            </a>
-            <a href="legal.html?page=contact" class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 font-medium text-gray-700 transition">
-                <i class="ph-bold ph-envelope text-lg"></i> Contact Us
-            </a>
+            <a href="legal.html?page=dmca" class="flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 hover:text-red-600 font-medium text-gray-700 transition"><i class="ph-bold ph-warning-circle text-lg"></i> DMCA Policy</a>
+            <a href="legal.html?page=contact" class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 font-medium text-gray-700 transition"><i class="ph-bold ph-envelope text-lg"></i> Contact Us</a>
         </div>
     </div>
 
@@ -102,57 +89,43 @@
         </div>
 
         <div id="loading" class="text-center py-20 hidden"><i class="ph ph-spinner animate-spin text-green-600 text-3xl"></i></div>
-        <div id="appGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5"></div>
+        
+        <div id="appGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5 mb-16"></div>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-shield-check"></i></div>
+                <h3 class="font-bold text-gray-900 mb-2">Safe & Secure</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">Every APK file is manually verified and scanned for malware to ensure your device's safety.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-lightning"></i></div>
+                <h3 class="font-bold text-gray-900 mb-2">Fast Downloads</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">Our optimized servers ensure you get the fastest download speeds without any wait times.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-globe"></i></div>
+                <h3 class="font-bold text-gray-900 mb-2">No Geo-Restrictions</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">Access apps and games that might not be available in your country's Play Store.</p>
+            </div>
+        </section>
+
+        <section class="bg-gray-100 rounded-2xl p-6 md:p-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Why Download from APKVerse?</h2>
+            <div class="text-sm text-gray-600 space-y-3 leading-relaxed">
+                <p>Welcome to <strong>APKVerse</strong>, your ultimate destination for free Android APK downloads. Whether you are looking for the latest games, essential utility tools, or social media apps, we have it all.</p>
+                <p>Unlike other stores, we focus on providing <strong>original and unmodified APKs</strong> directly from developers. We also offer older versions of apps, so if a new update doesn't work on your phone, you can always downgrade easily.</p>
+                <p>Start exploring our massive library today and enjoy the freedom of Android!</p>
+            </div>
+        </section>
     </main>
 
-    <footer class="bg-white border-t border-gray-200 pt-10 pb-6 mt-10">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-lg shadow"><i class="ph-fill ph-android-logo"></i></div>
-                    <span class="text-lg font-bold">APK<span class="text-green-600">Verse</span></span>
-                </div>
-                <p class="text-xs text-gray-500 leading-relaxed">
-                    APKVerse provides a safe and secure platform to download Android apps and games. All files are verified for safety.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <h4 class="font-bold text-gray-900 text-sm mb-3">Discovery</h4>
-                    <ul class="space-y-2 text-xs text-gray-500">
-                        <li><a href="index.html" class="hover:text-green-600">Home</a></li>
-                        <li><a href="#" onclick="filterCategory('Games')" class="hover:text-green-600">Games</a></li>
-                        <li><a href="#" onclick="filterCategory('Apps')" class="hover:text-green-600">Apps</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-gray-900 text-sm mb-3">Legal</h4>
-                    <ul class="space-y-2 text-xs text-gray-500">
-                        <li><a href="legal.html?page=dmca" class="hover:text-red-500">DMCA</a></li>
-                        <li><a href="legal.html?page=privacy" class="hover:text-green-600">Privacy Policy</a></li>
-                        <li><a href="legal.html?page=terms" class="hover:text-green-600">Terms of Service</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="font-bold text-gray-900 text-sm mb-3">Contact</h4>
-                <a href="legal.html?page=contact" class="block bg-gray-50 border border-gray-200 text-center py-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-green-50 hover:text-green-600 transition">
-                    Contact Support
-                </a>
-            </div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto px-4 border-t border-gray-100 pt-6 text-center">
-            <p class="text-[10px] text-gray-400">&copy; 2025 APKVerse. All rights reserved. Android is a trademark of Google LLC.</p>
-        </div>
-    </footer>
+    <footer id="main-footer"></footer>
 
     <script type="module">
         import { loadApps } from './app.js';
         let currentCat = 'All';
-        document.addEventListener('DOMContentLoaded', () => loadApps());
+        document.addEventListener('DOMContentLoaded', () => { /* Logic is in app.js now */ });
 
         let timeout = null;
         document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -160,7 +133,7 @@
             timeout = setTimeout(() => loadApps(currentCat, e.target.value), 300);
         });
 
-        // 🟢 MENU & ACCORDION LOGIC
+        // Toggle Logic
         window.toggleMenu = () => {
             const menu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
@@ -178,14 +151,8 @@
         window.toggleSubMenu = (id) => {
             const sub = document.getElementById(id);
             const icon = document.getElementById('icon-' + id);
-            
-            if (sub.classList.contains('open')) {
-                sub.classList.remove('open');
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                sub.classList.add('open');
-                icon.style.transform = 'rotate(180deg)';
-            }
+            if (sub.classList.contains('open')) { sub.classList.remove('open'); icon.style.transform = 'rotate(0deg)'; } 
+            else { sub.classList.add('open'); icon.style.transform = 'rotate(180deg)'; }
         }
 
         window.filterCategory = (cat) => {
