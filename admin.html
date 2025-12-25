@@ -44,85 +44,86 @@
             <div class="bg-white p-6 rounded-xl shadow-sm mb-8 border border-gray-100">
                 <h2 id="formTitle" class="text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2"><i class="ph ph-plus-circle"></i> Add App Data</h2>
                 
-                <form id="uploadForm" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <form id="uploadForm" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     
-                    <div class="space-y-5">
-                        <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-4">
-                            <h3 class="font-bold text-gray-800 text-sm uppercase tracking-wide">Core Metadata</h3>
-                            <div><label class="label">App Name</label><input type="text" id="appName" class="input-field" required></div>
-                            <div><label class="label">Package Name</label><input type="text" id="packageName" class="input-field font-mono text-xs" required></div>
-                            <div><label class="label">Developer</label><input type="text" id="developer" class="input-field" required></div>
-                            <div class="flex gap-2">
-                                <div class="flex-1"><label class="label">Category</label><select id="category" class="input-field"><option>Games</option><option>Social</option><option>Tools</option><option>Productivity</option></select></div>
-                                <div class="w-24"><label class="label">Size (MB)</label><input type="number" step="0.1" id="size" class="input-field" required></div>
-                            </div>
-                            <div><label class="label">Version Name</label><input type="text" id="version" class="input-field" required></div>
-                        </div>
-
-                        <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 space-y-4">
-                            <h3 class="font-bold text-blue-800 text-sm uppercase tracking-wide">Resources</h3>
-                            <div><label class="label text-blue-800">1. Logo URL (Link)</label><input type="url" id="iconUrl" placeholder="https://..." class="input-field border-blue-200" required></div>
-                            <div><label class="label text-green-800">2. APK Download Link</label><input type="url" id="apkUrl" placeholder="https://..." class="input-field border-green-200" required></div>
-                            <div><label class="label">3. Screenshots (URLs)</label><textarea id="screenshots" rows="2" class="input-field text-xs font-mono"></textarea></div>
-                        </div>
+                    <div class="space-y-4">
+                        <h3 class="section-title">1. Core Metadata</h3>
+                        <div><label class="label">App Name</label><input type="text" id="appName" class="input-field" required></div>
+                        <div><label class="label">Package Name</label><input type="text" id="packageName" class="input-field font-mono text-xs" required></div>
+                        <div><label class="label">Developer</label><input type="text" id="developer" class="input-field" required></div>
                         
-                        <div><label class="label">Description</label><textarea id="description" rows="3" class="input-field"></textarea></div>
+                        <div class="flex gap-2">
+                            <div class="flex-1">
+                                <label class="label">Category</label>
+                                <select id="category" class="input-field bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <optgroup label="Applications">
+                                        <option>Art & Design</option><option>Auto & Vehicles</option><option>Beauty</option><option>Books & Reference</option><option>Business</option><option>Comics</option><option>Communication</option><option>Dating</option><option>Education</option><option>Entertainment</option><option>Events</option><option>Finance</option><option>Food & Drink</option><option>Health & Fitness</option><option>House & Home</option><option>Lifestyle</option><option>Maps & Navigation</option><option>Medical</option><option>Music & Audio</option><option>News & Magazines</option><option>Parenting</option><option>Personalization</option><option>Photography</option><option>Productivity</option><option>Shopping</option><option>Social</option><option>Sports (App)</option><option>Tools</option><option>Travel & Local</option><option>Video Players</option><option>Weather</option>
+                                    </optgroup>
+                                    <optgroup label="Games">
+                                        <option>Action</option><option>Adventure</option><option>Arcade</option><option>Board</option><option>Card</option><option>Casino</option><option>Casual</option><option>Educational</option><option>Music</option><option>Puzzle</option><option>Racing</option><option>Role Playing</option><option>Simulation</option><option>Sports (Game)</option><option>Strategy</option><option>Trivia</option><option>Word</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="w-24"><label class="label">Size</label><input type="text" id="size" placeholder="15 MB" class="input-field" required></div>
+                        </div>
+                        <div><label class="label">Version Name</label><input type="text" id="version" class="input-field" required></div>
+                        
+                        <div class="bg-blue-50 p-3 rounded-lg border border-blue-200 mt-4">
+                            <label class="label text-blue-800">Logo URL</label>
+                            <input type="url" id="iconUrl" placeholder="https://..." class="input-field border-blue-200 bg-white" required>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <label class="label text-green-800">APK Download URL</label>
+                            <input type="url" id="apkUrl" placeholder="https://..." class="input-field border-green-200 bg-white" required>
+                        </div>
                     </div>
 
-                    <div class="flex flex-col h-full">
-                        <label class="label text-purple-700 font-bold mb-2 flex justify-between">
-                            <span>Technical Details (Paste Data Here)</span>
-                            <span class="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded">Format: Key: Value</span>
-                        </label>
-                        <textarea id="techInfo" class="flex-1 w-full p-4 rounded-xl border border-gray-300 font-mono text-[11px] leading-relaxed focus:ring-2 focus:ring-purple-500 outline-none resize-none bg-gray-50 text-gray-800" 
-                        placeholder="App Name: 
-Package Name: 
-
-Version Name: 
-Version Code: 
-
-Release Date: 
-Build Type: 
-Build Variant: 
-Build System: 
-
-APK Size: 
-Compression: 
-
-Minimum Android Version (Min SDK): 
-Target Android Version (Target SDK): 
-Compile SDK: 
-
-Supported Architectures (ABI):
-- armeabi-v7a
-- arm64-v8a
-
-Screen Densities Supported:
-- mdpi
-- hdpi
-
-Signature Scheme:
-- V1: Yes
-- V2: Yes
-
-Signing Certificate Info:
-- Signature Algorithm:
-- SHA-256 Fingerprint:
-
-Installation Source:
-
-Permissions Used:
-- android.permission.INTERNET
-
-Target CPU Features:
-- NEON
-
-ProGuard / R8:
-Obfuscation:
-Debuggable:
-Play Integrity:"></textarea>
+                    <div class="lg:col-span-2 bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <h3 class="section-title flex items-center gap-2"><i class="ph-fill ph-cpu"></i> Technical Specs</h3>
                         
-                        <button type="submit" id="uploadBtn" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-green-200 hover:bg-green-700 transition mt-4">Publish App</button>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                            <div><label class="label">Version Code</label><input type="text" id="t_verCode" class="input-field bg-white"></div>
+                            <div><label class="label">Release Date</label><input type="text" id="t_date" placeholder="25 Dec 2025" class="input-field bg-white"></div>
+                            <div><label class="label">Compression</label><select id="t_compress" class="input-field bg-white"><option>Enabled</option><option>Disabled</option></select></div>
+
+                            <div><label class="label">Min SDK</label><input type="text" id="t_minSdk" placeholder="Android 6.0" class="input-field bg-white"></div>
+                            <div><label class="label">Target SDK</label><input type="text" id="t_targetSdk" placeholder="Android 14" class="input-field bg-white"></div>
+                            <div><label class="label">Compile SDK</label><input type="text" id="t_compileSdk" placeholder="34" class="input-field bg-white"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 border-t border-gray-200 pt-4">
+                            <div><label class="label">Architectures (ABI)</label><input type="text" id="t_abi" placeholder="arm64-v8a, armeabi-v7a" class="input-field bg-white"></div>
+                            <div><label class="label">Supported Devices</label><input type="text" id="t_devices" placeholder="Phones, Tablets" class="input-field bg-white"></div>
+                        </div>
+
+                        <div class="mb-4 border-t border-gray-200 pt-4">
+                            <label class="label mb-2">Signature Scheme</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-1 text-xs"><input type="checkbox" id="t_v1" checked> V1</label>
+                                <label class="flex items-center gap-1 text-xs"><input type="checkbox" id="t_v2" checked> V2</label>
+                                <label class="flex items-center gap-1 text-xs"><input type="checkbox" id="t_v3"> V3</label>
+                                <label class="flex items-center gap-1 text-xs"><input type="checkbox" id="t_v4"> V4</label>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="col-span-2 md:col-span-1"><label class="label">SHA-1 Fingerprint</label><input type="text" id="t_sha1" class="input-field bg-white font-mono text-[10px]"></div>
+                            <div class="col-span-2 md:col-span-1"><label class="label">SHA-256 Fingerprint</label><input type="text" id="t_sha256" class="input-field bg-white font-mono text-[10px]"></div>
+                            <div><label class="label">Sign Algorithm</label><input type="text" id="t_algo" placeholder="SHA256withRSA" class="input-field bg-white"></div>
+                            <div><label class="label">Issuer</label><input type="text" id="t_issuer" class="input-field bg-white"></div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4 mb-4 border-t border-gray-200 pt-4">
+                            <div><label class="label">ProGuard</label><select id="t_proguard" class="input-field bg-white"><option>Enabled</option><option>Disabled</option></select></div>
+                            <div><label class="label">Obfuscation</label><select id="t_obfus" class="input-field bg-white"><option>Enabled</option><option>Disabled</option></select></div>
+                            <div><label class="label">Debuggable</label><select id="t_debug" class="input-field bg-white"><option>False</option><option>True</option></select></div>
+                        </div>
+
+                        <div><label class="label">Permissions</label><textarea id="t_perms" rows="2" class="input-field bg-white"></textarea></div>
+                        <div class="mt-4"><label class="label">Screenshots (URLs)</label><textarea id="screenshots" rows="2" class="input-field bg-white"></textarea></div>
+                        
+                        <button type="submit" id="uploadBtn" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold shadow-lg mt-6 hover:bg-green-700">Save App Data</button>
                     </div>
                 </form>
             </div>
@@ -134,9 +135,10 @@ Play Integrity:"></textarea>
     </div>
 
     <style>
-        .input-field { width: 100%; border: 1px solid #e5e7eb; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; transition: 0.2s; background: white; }
+        .input-field { width: 100%; border: 1px solid #e5e7eb; padding: 8px; border-radius: 6px; font-size: 12px; outline: none; transition: 0.2s; }
         .input-field:focus { border-color: #16a34a; box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1); }
-        .label { font-size: 11px; font-weight: bold; color: #6b7280; margin-bottom: 3px; display: block; }
+        .label { font-size: 10px; font-weight: bold; color: #6b7280; margin-bottom: 2px; display: block; uppercase; letter-spacing: 0.5px; }
+        .section-title { font-weight: bold; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; margin-bottom: 12px; font-size: 14px; }
     </style>
 
     <script type="module">
