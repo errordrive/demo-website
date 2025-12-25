@@ -32,49 +32,34 @@
     </nav>
 
     <div id="sideMenuOverlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity opacity-0"></div>
-    
     <div id="sideMenu" class="fixed top-0 left-0 h-full w-72 bg-white z-[60] transform -translate-x-full transition-transform duration-300 shadow-2xl overflow-y-auto">
         <div class="p-5 border-b border-gray-100 flex justify-between items-center">
             <span class="text-xl font-bold text-gray-800">Menu</span>
             <button onclick="toggleMenu()" class="text-gray-500 hover:text-red-500 text-xl"><i class="ph-bold ph-x"></i></button>
         </div>
-
         <div class="p-4 space-y-6">
-            
             <div>
                 <h4 class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">Discover</h4>
                 <ul class="space-y-2 text-sm font-medium text-gray-600">
                     <li><a href="index.html" class="flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-house"></i> Home</a></li>
-                    <li><a href="#" onclick="filterCategory('All'); toggleMenu()" class="flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-fire"></i> Top Downloads</a></li>
-                    <li><a href="#" onclick="filterCategory('All'); toggleMenu()" class="flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-clock"></i> Latest Updates</a></li>
                 </ul>
             </div>
-
             <div>
                 <h4 class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">Categories</h4>
                 <ul class="space-y-2 text-sm font-medium text-gray-600">
                     <li><button onclick="filterCategory('Games'); toggleMenu()" class="w-full text-left flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-game-controller"></i> Games</button></li>
                     <li><button onclick="filterCategory('Social'); toggleMenu()" class="w-full text-left flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-users"></i> Social</button></li>
                     <li><button onclick="filterCategory('Tools'); toggleMenu()" class="w-full text-left flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-wrench"></i> Tools</button></li>
-                    <li><button onclick="filterCategory('Entertainment'); toggleMenu()" class="w-full text-left flex items-center gap-3 p-2 rounded-lg hover:bg-green-50 hover:text-green-600"><i class="ph-bold ph-film-strip"></i> Entertainment</button></li>
                 </ul>
             </div>
-
             <div>
                 <h4 class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">Information</h4>
                 <ul class="space-y-2 text-sm font-medium text-gray-600">
                     <li><a href="legal.html?page=about" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-info"></i> About Us</a></li>
                     <li><a href="legal.html?page=contact" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-envelope"></i> Contact Us</a></li>
                     <li><a href="legal.html?page=privacy" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-shield"></i> Privacy Policy</a></li>
-                    <li><a href="legal.html?page=terms" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-scroll"></i> Terms & Conditions</a></li>
-                    <li><a href="legal.html?page=dmca" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-copyright"></i> DMCA Policy</a></li>
-                    <li><a href="legal.html?page=disclaimer" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"><i class="ph-bold ph-warning-circle"></i> Disclaimer</a></li>
                 </ul>
             </div>
-
-        </div>
-        <div class="p-4 border-t border-gray-100 text-center text-xs text-gray-400">
-            &copy; 2025 APKVerse Inc.
         </div>
     </div>
 
@@ -83,7 +68,7 @@
         <div class="max-w-2xl mx-auto text-center relative z-10">
             <h1 class="text-2xl font-bold mb-4">Find Secure <span class="text-green-400">APKs</span></h1>
             <div class="relative w-full">
-                <input type="text" id="searchInput" placeholder="Search apps, games..." 
+                <input type="text" id="searchInput" placeholder="Search apps or games..." 
                     class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm">
                 <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
             </div>
@@ -100,7 +85,7 @@
 
         <div id="loading" class="text-center py-20 hidden"><i class="ph ph-spinner animate-spin text-green-600 text-3xl"></i></div>
         
-        <div id="appGrid" class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4"></div>
+        <div id="appGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4"></div>
     </main>
 
     <footer class="bg-white border-t border-gray-200 py-6 mt-8 text-center text-xs text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
@@ -116,18 +101,14 @@
             timeout = setTimeout(() => loadApps(currentCat, e.target.value), 300);
         });
 
-        // 🟢 MENU TOGGLE LOGIC
         window.toggleMenu = () => {
             const menu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
-            
             if (menu.classList.contains('-translate-x-full')) {
-                // Open
                 menu.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             } else {
-                // Close
                 menu.classList.add('-translate-x-full');
                 overlay.classList.add('opacity-0');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
