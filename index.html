@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APKVerse - Home</title>
+    <title>APKVerse - Secure APK Downloads</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; } 
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Smooth Image Loading */
+        img { transition: opacity 0.3s ease-in-out; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
@@ -16,26 +18,26 @@
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center gap-2 cursor-pointer select-none">
-                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-xl shadow-lg"><i class="ph-fill ph-android-logo"></i></div>
-                <span class="text-lg font-bold tracking-tight">APK<span class="text-green-600">Verse</span></span>
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-green-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg"><i class="ph-fill ph-android-logo"></i></div>
+                <span class="text-lg md:text-xl font-extrabold tracking-tight">APK<span class="text-green-600">Verse</span></span>
             </a>
-            <a href="admin.html" class="text-[10px] font-bold text-gray-500 hover:text-green-600 uppercase tracking-widest border border-gray-200 px-3 py-1 rounded-full transition">Admin</a>
+            <a href="admin.html" class="text-[10px] md:text-xs font-bold text-gray-500 hover:text-green-600 uppercase tracking-widest border border-gray-200 px-3 py-1.5 rounded-full transition">Admin Panel</a>
         </div>
     </nav>
 
-    <div class="bg-gray-900 text-white py-8 px-4 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-green-500 rounded-full blur-[100px] opacity-20"></div>
+    <div class="bg-gray-900 text-white py-8 md:py-12 px-4 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-green-500 rounded-full blur-[120px] opacity-20"></div>
         <div class="max-w-2xl mx-auto text-center relative z-10">
-            <h1 class="text-2xl font-bold mb-4">Find Secure <span class="text-green-400">APKs</span></h1>
-            <div class="relative w-full">
-                <input type="text" id="searchInput" placeholder="Search apps or games..." 
-                    class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm">
-                <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <h1 class="text-2xl md:text-4xl font-bold mb-4 md:mb-6">Find Secure <span class="text-green-400">APKs</span></h1>
+            <div class="relative w-full max-w-lg mx-auto">
+                <input type="text" id="searchInput" placeholder="Search apps, games..." 
+                    class="w-full pl-10 pr-4 py-3 md:py-4 rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm md:text-base">
+                <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
             </div>
         </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+    <main class="max-w-7xl mx-auto px-3 md:px-6 py-6 flex-1 w-full">
         <div class="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar" id="categoryList">
             <button onclick="filterCategory('All')" class="cat-btn active bg-green-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md whitespace-nowrap">All</button>
             <button onclick="filterCategory('Games')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Games</button>
@@ -45,7 +47,7 @@
 
         <div id="loading" class="text-center py-20 hidden"><i class="ph ph-spinner animate-spin text-green-600 text-3xl"></i></div>
         
-        <div id="appGrid" class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4"></div>
+        <div id="appGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6"></div>
     </main>
 
     <footer class="bg-white border-t border-gray-200 py-6 mt-8 text-center text-xs text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
