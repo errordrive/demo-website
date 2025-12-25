@@ -48,30 +48,41 @@ export async function loadApps(category = 'All', searchQuery = '') {
     } catch (e) { console.error(e); }
 }
 
+// 🟢 NEW VERTICAL CARD DESIGN (CLICK FIXED)
 function renderAppCard(id, app, container) {
     const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random&size=128`;
 
+    // Added: onclick="window.location.href..." to the main div
+    // Layout: flex-col (Vertical) -> Image Top, Text Bottom
     const card = `
-        <div onclick="window.location.href='app-details.html?id=${id}'" class="group bg-white rounded-2xl p-4 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 cursor-pointer h-full flex flex-col relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-transparent to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div class="relative flex items-start gap-4 z-10">
-                <div class="shrink-0 relative">
-                    <img src="${app.iconUrl}" onerror="this.src='${fallbackImage}'" alt="${app.name}" class="w-20 h-20 rounded-2xl shadow-sm object-cover bg-white border border-gray-100 group-hover:scale-105 transition-transform duration-300">
-                </div>
-                <div class="flex-1 min-w-0 pt-1">
-                    <h3 class="font-bold text-gray-900 text-lg leading-tight truncate group-hover:text-green-600 transition-colors">${app.name}</h3>
-                    <p class="text-xs text-gray-500 font-medium truncate mt-1 flex items-center gap-1">
-                        ${app.developer ? `<i class="ph-fill ph-check-circle text-green-500 text-[10px]"></i> ${app.developer}` : 'Unknown Developer'}
-                    </p>
-                    <div class="flex flex-wrap gap-2 mt-2.5">
-                        <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded uppercase tracking-wider">${app.category}</span>
-                        <span class="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider">v${app.version}</span>
-                    </div>
+        <div onclick="window.location.href='app-details.html?id=${id}'" class="group bg-white rounded-2xl p-5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 cursor-pointer h-full flex flex-col items-center text-center relative overflow-hidden">
+            
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <div class="relative z-10 mb-4">
+                <img src="${app.iconUrl}" 
+                     onerror="this.src='${fallbackImage}'" 
+                     alt="${app.name}" 
+                     class="w-24 h-24 rounded-[1.5rem] shadow-sm object-cover bg-white border border-gray-100 group-hover:scale-105 transition-transform duration-300">
+            </div>
+
+            <div class="flex-1 w-full relative z-10 flex flex-col items-center">
+                <h3 class="font-bold text-gray-900 text-lg leading-tight line-clamp-1 group-hover:text-green-600 transition-colors">${app.name}</h3>
+                
+                <p class="text-xs text-gray-500 font-medium mt-1 flex items-center gap-1 justify-center">
+                    ${app.developer ? `<i class="ph-fill ph-check-circle text-green-500 text-[10px]"></i> ${app.developer}` : ''}
+                </p>
+                
+                <div class="flex flex-wrap justify-center gap-2 mt-3">
+                    <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded uppercase tracking-wider">${app.category}</span>
+                    <span class="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider">v${app.version}</span>
                 </div>
             </div>
-            <div class="mt-4 pt-3 border-t border-dashed border-gray-200 flex justify-between items-center z-10 relative">
-                <span class="text-xs text-gray-400 font-mono flex items-center gap-1"><i class="ph-bold ph-hard-drives"></i> ${app.size}</span>
-                <span class="flex items-center gap-1.5 text-xs font-bold text-white bg-green-600 px-4 py-2 rounded-full shadow-lg shadow-green-200 group-hover:bg-green-700 transition-colors">Download</span>
+
+            <div class="mt-5 w-full relative z-10">
+                <button class="w-full flex items-center justify-center gap-2 text-sm font-bold text-white bg-green-600 py-2.5 rounded-xl shadow-lg shadow-green-200 group-hover:bg-green-700 transition-colors">
+                    Download <i class="ph-bold ph-download-simple"></i>
+                </button>
             </div>
         </div>
     `;
@@ -237,6 +248,7 @@ async function handleFormSubmit(e) {
     e.preventDefault();
     document.getElementById('uploadingScreen').classList.remove('hidden');
     
+    // COLLECT SPECIFIC TECH FIELDS
     const techData = {
         verCode: document.getElementById('t_verCode').value,
         date: document.getElementById('t_date').value,
@@ -270,7 +282,7 @@ async function handleFormSubmit(e) {
         apkUrl: document.getElementById('apkUrl').value,
         iconUrl: document.getElementById('iconUrl').value,
         screenshots: document.getElementById('screenshots').value,
-        techData: techData,
+        techData: techData, // Save as Object
         updatedAt: serverTimestamp()
     };
 
