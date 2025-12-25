@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APKVerse - Secure APK Downloads</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>.no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }</style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.reload()">
+                <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg shadow-green-200"><i class="ph-fill ph-android-logo"></i></div>
+                <span class="text-lg font-extrabold tracking-tight">APK<span class="text-green-600">Verse</span></span>
+            </div>
+            <a href="admin.html" class="text-xs font-bold text-gray-500 hover:text-green-600 uppercase tracking-widest border px-3 py-1 rounded-full">Admin Login</a>
+        </div>
+    </nav>
+
+    <div class="bg-gray-900 text-white py-12 px-4 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-green-500 rounded-full blur-[120px] opacity-20"></div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h1 class="text-3xl md:text-5xl font-bold mb-6">Your Safe <span class="text-green-400">APK Store</span></h1>
+            <div class="relative max-w-lg mx-auto">
+                <input type="text" id="searchInput" placeholder="Search apps, games..." 
+                    class="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition">
+                <i class="ph-bold ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
+        <div class="flex gap-2 overflow-x-auto pb-6 mb-2 no-scrollbar" id="categoryList">
+            <button onclick="filterCategory('All')" class="cat-btn active bg-green-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow-md whitespace-nowrap">All</button>
+            <button onclick="filterCategory('Games')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap">Games</button>
+            <button onclick="filterCategory('Social')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap">Social</button>
+            <button onclick="filterCategory('Tools')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap">Tools</button>
+        </div>
+
+        <div id="loading" class="text-center py-20 hidden"><i class="ph ph-spinner animate-spin text-green-600 text-4xl"></i></div>
+        <div id="appGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-100 py-8 mt-8 text-center text-sm text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
+
+    <div id="appModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-800 bg-white p-2 rounded-full shadow-sm"><i class="ph-bold ph-x text-xl"></i></button>
+            <div id="modalContent" class="p-6 md:p-8"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { loadApps } from './app.js';
+        let currentCat = 'All';
+        document.addEventListener('DOMContentLoaded', () => loadApps());
+
+        let timeout = null;
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => loadApps(currentCat, e.target.value), 300);
+        });
+
+        window.filterCategory = (cat) => {
+            currentCat = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap";
+                if(btn.innerText === cat) btn.className = "cat-btn bg-green-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow-md whitespace-nowrap";
+            });
+            loadApps(cat, document.getElementById('searchInput').value);
+        }
+    </script>
+</body>
+</html>
