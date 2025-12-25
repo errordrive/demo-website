@@ -36,10 +36,12 @@
             <span class="text-lg font-extrabold text-gray-800">Menu</span>
             <button onclick="toggleMenu()" class="text-gray-500 hover:text-red-500 text-xl"><i class="ph-bold ph-x"></i></button>
         </div>
+
         <div class="p-4 space-y-2">
             <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-green-600 font-medium text-gray-700 transition">
                 <i class="ph-bold ph-house text-lg"></i> Home
             </a>
+
             <div>
                 <button onclick="toggleSubMenu('appsSub')" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition group">
                     <span class="flex items-center gap-3"><i class="ph-bold ph-squares-four text-lg"></i> Apps</span>
@@ -49,8 +51,10 @@
                     <button onclick="filterCategory('Social'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Social</button>
                     <button onclick="filterCategory('Tools'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Tools</button>
                     <button onclick="filterCategory('Productivity'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Productivity</button>
+                    <button onclick="filterCategory('Communication'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Communication</button>
                 </div>
             </div>
+
             <div>
                 <button onclick="toggleSubMenu('gamesSub')" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition group">
                     <span class="flex items-center gap-3"><i class="ph-bold ph-game-controller text-lg"></i> Games</span>
@@ -62,9 +66,35 @@
                     <button onclick="filterCategory('Racing'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Racing</button>
                 </div>
             </div>
+
             <div class="border-t border-gray-100 my-4"></div>
-            <a href="legal.html?page=dmca" class="flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 hover:text-red-600 font-medium text-gray-700 transition"><i class="ph-bold ph-warning-circle text-lg"></i> DMCA Policy</a>
-            <a href="legal.html?page=contact" class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 font-medium text-gray-700 transition"><i class="ph-bold ph-envelope text-lg"></i> Contact Us</a>
+
+            <h4 class="text-xs font-bold text-gray-400 uppercase mb-2 px-3 tracking-wider">Legal & Support</h4>
+            
+            <a href="legal.html?page=about" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-info text-lg text-blue-500"></i> About Us
+            </a>
+            <a href="legal.html?page=contact" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-envelope text-lg text-purple-500"></i> Contact Us
+            </a>
+            <a href="legal.html?page=privacy" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-shield-check text-lg text-green-500"></i> Privacy Policy
+            </a>
+            <a href="legal.html?page=terms" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-scroll text-lg text-orange-500"></i> Terms & Conditions
+            </a>
+            <a href="legal.html?page=dmca" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-copyright text-lg text-red-500"></i> DMCA Policy
+            </a>
+            <a href="legal.html?page=disclaimer" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-warning-circle text-lg text-yellow-500"></i> Disclaimer
+            </a>
+            <a href="legal.html?page=cookie" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition">
+                <i class="ph-bold ph-cookie text-lg text-amber-600"></i> Cookie Policy
+            </a>
+        </div>
+        <div class="p-4 border-t border-gray-100 text-center text-xs text-gray-400">
+            &copy; 2025 APKVerse Inc.
         </div>
     </div>
 
@@ -96,25 +126,24 @@
             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
                 <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-shield-check"></i></div>
                 <h3 class="font-bold text-gray-900 mb-2">Safe & Secure</h3>
-                <p class="text-xs text-gray-500 leading-relaxed">Every APK file is manually verified and scanned for malware to ensure your device's safety.</p>
+                <p class="text-xs text-gray-500 leading-relaxed">Every APK file is manually verified and scanned for malware.</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
                 <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-lightning"></i></div>
                 <h3 class="font-bold text-gray-900 mb-2">Fast Downloads</h3>
-                <p class="text-xs text-gray-500 leading-relaxed">Our optimized servers ensure you get the fastest download speeds without any wait times.</p>
+                <p class="text-xs text-gray-500 leading-relaxed">Our optimized servers ensure you get the fastest download speeds.</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
                 <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="ph-fill ph-globe"></i></div>
-                <h3 class="font-bold text-gray-900 mb-2">No Geo-Restrictions</h3>
-                <p class="text-xs text-gray-500 leading-relaxed">Access apps and games that might not be available in your country's Play Store.</p>
+                <h3 class="font-bold text-gray-900 mb-2">No Restrictions</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">Access apps and games that might not be available in your region.</p>
             </div>
         </section>
 
         <section class="bg-gray-100 rounded-2xl p-6 md:p-8">
             <h2 class="text-xl font-bold text-gray-800 mb-4">Why Download from APKVerse?</h2>
             <div class="text-sm text-gray-600 space-y-3 leading-relaxed">
-                <p>Welcome to <strong>APKVerse</strong>, your ultimate destination for free Android APK downloads. Whether you are looking for the latest games, essential utility tools, or social media apps, we have it all.</p>
-                <p>Unlike other stores, we focus on providing <strong>original and unmodified APKs</strong> directly from developers. We also offer older versions of apps, so if a new update doesn't work on your phone, you can always downgrade easily.</p>
+                <p>Welcome to <strong>APKVerse</strong>, your ultimate destination for free Android APK downloads. We focus on providing original and unmodified APKs directly from developers.</p>
                 <p>Start exploring our massive library today and enjoy the freedom of Android!</p>
             </div>
         </section>
@@ -125,7 +154,8 @@
     <script type="module">
         import { loadApps } from './app.js';
         let currentCat = 'All';
-        document.addEventListener('DOMContentLoaded', () => { /* Logic is in app.js now */ });
+        // loadApps() is now handled by app.js global init, but keeping this just in case
+        // Logic handled in app.js listener
 
         let timeout = null;
         document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -133,7 +163,6 @@
             timeout = setTimeout(() => loadApps(currentCat, e.target.value), 300);
         });
 
-        // Toggle Logic
         window.toggleMenu = () => {
             const menu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
