@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// SLIDER
+// SLIDER LOGIC
 export async function initSlider() {
     const track = document.getElementById('heroSlider');
     const dotsContainer = document.getElementById('sliderDots');
@@ -45,7 +45,7 @@ export async function initSlider() {
         let slides = [];
         snapshot.forEach(doc => slides.push(doc.data()));
         
-        if (slides.length === 0) slides.push({ img: 'https://via.placeholder.com/800x400', link: '#' });
+        if (slides.length === 0) slides.push({ img: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2070', link: '#' });
 
         track.innerHTML = '';
         if(dotsContainer) dotsContainer.innerHTML = '';
@@ -86,9 +86,8 @@ export async function initSlider() {
     } catch(e) {}
 }
 
-// ADS
+// ADS LOGIC
 function initAds() {
-    // Flow Ad
     setTimeout(() => {
         if(document.getElementById('flowAd')) return;
         const div = document.createElement('div');
@@ -104,7 +103,7 @@ function initAds() {
     }, 5000);
 }
 
-// APPS
+// APP LOGIC
 export async function loadApps(cat='All', search='') {
     const grid = document.getElementById('appGrid');
     if(!grid) return;
@@ -149,7 +148,7 @@ async function loadRecommendedApps(currentId) {
 }
 window.trackDownload = (id) => updateDoc(doc(db, "apps", id), { downloads: increment(1) });
 
-// ADMIN
+// ADMIN LOGIC
 export function initAdmin() {
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -208,7 +207,7 @@ async function handleFormSubmit(e) {
     };
     try {
         if(isEditMode) await updateDoc(doc(db, "apps", currentEditId), appData); else { appData.downloads=0; await addDoc(collection(db, "apps"), appData); }
-        document.getElementById('uploadingScreen').classList.add('hidden'); loadAdminList(); resetForm();
+        document.getElementById('uploadingScreen').classList.add('hidden'); loadAdminList(); window.resetForm();
     } catch(e) { alert(e.message); document.getElementById('uploadingScreen').classList.add('hidden'); }
 }
 
