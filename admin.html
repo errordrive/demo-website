@@ -28,27 +28,29 @@
     <div id="successScreen" class="hidden fixed inset-0 bg-green-600 z-[60] flex flex-col items-center justify-center text-white px-4 text-center">
         <div class="bg-white text-green-600 p-4 rounded-full text-4xl mb-4 shadow-xl"><i class="ph-bold ph-check"></i></div>
         <h2 class="text-2xl font-bold mb-6">Success!</h2>
-        <div class="flex gap-3">
-            <button onclick="closeSuccessScreen()" class="bg-white text-green-700 px-5 py-2 rounded-lg font-bold text-sm">Add New</button>
+        <div class="flex gap-3 justify-center">
+            <button onclick="closeSuccessScreen()" class="bg-white text-green-700 px-5 py-2 rounded-lg font-bold text-sm">OK</button>
             <a href="index.html" target="_blank" class="bg-green-800 text-white border border-green-400 px-5 py-2 rounded-lg font-bold text-sm">View Site</a>
         </div>
     </div>
 
     <div id="dashboard" class="hidden min-h-screen flex flex-col pb-20">
         <header class="bg-white shadow px-6 py-3 flex justify-between items-center sticky top-0 z-30">
-            <h1 class="text-lg font-bold flex items-center gap-2"><i class="ph-fill ph-android-logo text-green-600"></i> Admin</h1>
+            <h1 class="text-lg font-bold flex items-center gap-2"><i class="ph-fill ph-android-logo text-green-600"></i> Admin Panel</h1>
             <button onclick="logout()" class="text-red-500 text-xs font-bold border border-red-200 px-3 py-1 rounded">Logout</button>
         </header>
 
         <div class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6">
             
             <div class="bg-white p-5 rounded-xl shadow-sm mb-8 border border-gray-200">
-                <h2 id="formTitle" class="text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2 text-gray-700">
-                    <i class="ph-bold ph-plus-circle text-green-600"></i> Add New App
-                </h2>
+                <div class="flex justify-between items-center border-b pb-2 mb-6">
+                    <h2 id="formTitle" class="text-lg font-bold text-gray-700 flex items-center gap-2">
+                        <i class="ph-bold ph-plus-circle text-green-600"></i> Add New App
+                    </h2>
+                    <button type="button" onclick="resetForm()" class="text-xs text-gray-400 hover:text-gray-600">Reset Form</button>
+                </div>
                 
                 <form id="uploadForm" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
                     <div class="space-y-3">
                         <h3 class="text-xs font-bold text-gray-400 uppercase">Basic Info</h3>
                         <div><label class="label">App Name</label><input type="text" id="appName" class="input-field" required></div>
@@ -125,15 +127,17 @@
                 </form>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="font-bold text-gray-700 text-sm flex items-center gap-2">
-                        <i class="ph-bold ph-list-dashes"></i> App Library
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-10">
+                <div class="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                        <i class="ph-bold ph-list-dashes text-blue-600"></i> App Library
                     </h3>
-                    <span class="text-xs text-gray-400">Manage your apps here</span>
+                    <span class="text-xs text-gray-500 bg-white border px-2 py-1 rounded">Apps List</span>
                 </div>
-                <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
-                    </ul>
+                
+                <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[600px] overflow-y-auto min-h-[100px]">
+                    <li class="p-6 text-center text-gray-400 text-sm">Loading apps...</li>
+                </ul>
             </div>
 
         </div>
