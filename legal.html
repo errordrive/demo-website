@@ -12,15 +12,15 @@
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
         <div class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-2">
             <a href="index.html" class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition">
-                <i class="ph-bold ph-arrow-left text-xl"></i> <span class="font-bold">Back</span>
+                <i class="ph-bold ph-arrow-left text-xl"></i> <span class="font-bold text-sm">Back to Home</span>
             </a>
         </div>
     </nav>
 
     <main class="max-w-4xl mx-auto px-4 py-10 flex-1 w-full">
         <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-            <h1 id="pageTitle" class="text-3xl font-extrabold text-gray-900 mb-6">Loading...</h1>
-            <div id="pageContent" class="prose prose-green max-w-none text-gray-600 text-sm leading-relaxed">
+            <h1 id="pageTitle" class="text-2xl font-extrabold text-gray-900 mb-6 border-b pb-4">Loading...</h1>
+            <div id="pageContent" class="prose prose-green max-w-none text-gray-600 text-sm leading-relaxed space-y-4">
                 </div>
         </div>
     </main>
@@ -28,48 +28,31 @@
     <footer class="bg-white border-t border-gray-200 py-6 mt-8 text-center text-xs text-gray-400"><p>&copy; 2025 APKVerse.</p></footer>
 
     <script>
-        // Content Data
         const content = {
+            'dmca': {
+                title: 'DMCA Copyright Policy',
+                body: `<p>APKVerse respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act (DMCA), we will respond to claims of copyright infringement.</p>
+                       <h3 class="font-bold text-gray-900">Takedown Notice</h3>
+                       <p>If you believe that your copyrighted work has been copied in a way that constitutes copyright infringement and is accessible on this site, please notify us.</p>
+                       <p>Please send all DMCA notices to: <strong>dmca@apkverse.com</strong></p>`
+            },
             'privacy': {
                 title: 'Privacy Policy',
-                body: `<p>Welcome to APKVerse. Your privacy is important to us.</p>
-                       <h3 class="font-bold text-gray-800 mt-4 mb-2">1. Data Collection</h3>
-                       <p>We do not collect personal data unless you provide it voluntarily via contact forms. We may use cookies for site functionality.</p>
-                       <h3 class="font-bold text-gray-800 mt-4 mb-2">2. Third Party Links</h3>
-                       <p>Our site contains links to other websites. We are not responsible for their privacy practices.</p>`
+                body: `<p>Your privacy is important to us. It is APKVerse's policy to respect your privacy regarding any information we may collect from you across our website.</p>
+                       <h3 class="font-bold text-gray-900">Information We Collect</h3>
+                       <p>We only collect information about you if we have a reason to do so – for example, to provide our services, to communicate with you, or to make our services better.</p>`
             },
             'terms': {
                 title: 'Terms & Conditions',
-                body: `<p>By using APKVerse, you agree to these terms.</p>
-                       <h3 class="font-bold text-gray-800 mt-4 mb-2">Usage</h3>
-                       <p>You agree not to use this site for any illegal purposes. We host links to APK files; we do not own the apps unless stated.</p>`
-            },
-            'dmca': {
-                title: 'DMCA / Copyright',
-                body: `<p>APKVerse respects intellectual property rights.</p>
-                       <p>If you believe your work has been infringed, please contact us with proof, and we will remove the content immediately.</p>`
+                body: `<p>By accessing the website at APKVerse, you are agreeing to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>`
             },
             'contact': {
                 title: 'Contact Us',
-                body: `<p>Have questions or suggestions? Reach out to us:</p>
-                       <ul class="list-disc pl-5 mt-2">
-                           <li>Email: <a href="mailto:support@apkverse.com" class="text-green-600 underline">support@apkverse.com</a></li>
-                           <li>Telegram: @APKVerseSupport</li>
-                       </ul>`
-            },
-            'about': {
-                title: 'About Us',
-                body: `<p>APKVerse is your safe destination for Android APKs.</p>
-                       <p>We verify files before sharing links to ensure a secure experience. Our goal is to provide a clean, fast, and simple app store alternative.</p>`
-            },
-            'disclaimer': {
-                title: 'Disclaimer',
-                body: `<p>APKVerse is not associated or affiliated with Google, Google Play or Android in any way.</p>
-                       <p>Android is a trademark of Google Inc. All the apps & games are property and trademark of their respective developer or publisher.</p>`
+                body: `<p>We'd love to hear from you! Whether you have a question about features, trials, pricing, need a demo, or anything else, our team is ready to answer all your questions.</p>
+                       <p>Email: <strong>support@apkverse.com</strong></p>`
             }
         };
 
-        // Load Content based on URL
         const params = new URLSearchParams(window.location.search);
         const page = params.get('page');
 
@@ -78,7 +61,7 @@
             document.getElementById('pageContent').innerHTML = content[page].body;
         } else {
             document.getElementById('pageTitle').innerText = "Page Not Found";
-            document.getElementById('pageContent').innerHTML = "<p>The requested information is not available.</p>";
+            document.getElementById('pageContent').innerHTML = "<p>The requested page does not exist.</p>";
         }
     </script>
 </body>
