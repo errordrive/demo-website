@@ -11,7 +11,9 @@
 
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
         <div class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-2">
-            <a href="index.html" class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition"><i class="ph-bold ph-arrow-left text-xl"></i> <span class="font-bold text-sm">Back to Home</span></a>
+            <a href="index.html" class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition">
+                <i class="ph-bold ph-arrow-left text-xl"></i> <span class="font-bold text-sm">Back to Home</span>
+            </a>
         </div>
     </nav>
 
@@ -22,15 +24,16 @@
         </div>
     </main>
 
-    <div id="global-footer"></div>
-    <script src="footer.js"></script>
+    <footer id="main-footer"></footer>
 
     <script type="module" src="./app.js"></script>
     <script>
         const content = {
-            'dmca': { title: 'DMCA Policy', body: '<p>APKVerse respects rights...</p>' },
-            'privacy': { title: 'Privacy Policy', body: '<p>Your privacy is priority...</p>' },
-            'contact': { title: 'Contact Us', body: '<p>Email: support@apkverse.com</p>' }
+            'dmca': { title: 'DMCA Policy', body: '<p>APKVerse respects intellectual property...</p>' },
+            'privacy': { title: 'Privacy Policy', body: '<p>Your privacy is important to us...</p>' },
+            'terms': { title: 'Terms & Conditions', body: '<p>By using this site...</p>' },
+            'contact': { title: 'Contact Us', body: '<p>Email: support@apkverse.com</p>' },
+            'about': { title: 'About Us', body: '<p>APKVerse is your safe destination...</p>' }
         };
         const params = new URLSearchParams(window.location.search);
         const page = params.get('page');
