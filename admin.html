@@ -36,11 +36,25 @@
 
     <div id="dashboard" class="hidden min-h-screen flex flex-col pb-20">
         <header class="bg-white shadow px-6 py-4 flex justify-between items-center sticky top-0 z-30">
-            <h1 class="text-xl font-bold flex items-center gap-2"><i class="ph-fill ph-android-logo text-green-600"></i> Admin</h1>
-            <button onclick="logout()" class="text-red-500 text-sm font-bold border border-red-200 px-3 py-1 rounded">Logout</button>
+            <h1 class="text-xl font-bold flex items-center gap-2"><i class="ph-fill ph-android-logo text-green-600"></i> Admin Dashboard</h1>
+            <button onclick="logout()" class="text-red-500 text-sm font-bold border border-red-200 px-3 py-1 rounded hover:bg-red-50 transition">Logout</button>
         </header>
 
+        <!-- Tab Navigation -->
+        <div class="bg-white border-b border-gray-200 sticky top-[60px] z-20">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex gap-4">
+                    <button onclick="switchTab('apps')" id="tabApps" class="tab-btn active px-4 py-3 font-bold text-sm border-b-2 border-green-600 text-green-600">Apps Management</button>
+                    <button onclick="switchTab('banners')" id="tabBanners" class="tab-btn px-4 py-3 font-bold text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700">Hero Banners</button>
+                    <button onclick="switchTab('settings')" id="tabSettings" class="tab-btn px-4 py-3 font-bold text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700">Site Settings</button>
+                </div>
+            </div>
+        </div>
+
         <div class="flex-1 max-w-7xl mx-auto w-full p-6">
+            
+        <!-- APPS TAB -->
+        <div id="appsTab" class="tab-content">
             <div class="bg-white p-6 rounded-xl shadow-sm mb-8 border border-gray-100">
                 <h2 id="formTitle" class="text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2"><i class="ph ph-plus-circle"></i> Add App Data</h2>
                 
@@ -56,12 +70,12 @@
                             <div class="flex-1">
                                 <label class="label">Category</label>
                                 <select id="category" class="input-field bg-white">
-                                    <option value="" disabled selected>Select</option>
-                                    <optgroup label="Applications">
-                                        <option>Art & Design</option><option>Auto & Vehicles</option><option>Beauty</option><option>Books & Reference</option><option>Business</option><option>Comics</option><option>Communication</option><option>Dating</option><option>Education</option><option>Entertainment</option><option>Events</option><option>Finance</option><option>Food & Drink</option><option>Health & Fitness</option><option>House & Home</option><option>Lifestyle</option><option>Maps & Navigation</option><option>Medical</option><option>Music & Audio</option><option>News & Magazines</option><option>Parenting</option><option>Personalization</option><option>Photography</option><option>Productivity</option><option>Shopping</option><option>Social</option><option>Sports (App)</option><option>Tools</option><option>Travel & Local</option><option>Video Players</option><option>Weather</option>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <optgroup label="📱 Applications">
+                                        <option>Communication</option><option>Social</option><option>Messaging</option><option>Photography</option><option>Video Players</option><option>Music & Audio</option><option>Tools</option><option>Productivity</option><option>Business</option><option>Finance</option><option>Shopping</option><option>Education</option><option>Books & Reference</option><option>News & Magazines</option><option>Entertainment</option><option>Art & Design</option><option>Lifestyle</option><option>Health & Fitness</option><option>Food & Drink</option><option>Maps & Navigation</option><option>Travel & Local</option><option>Dating</option><option>Weather</option><option>Personalization</option><option>Auto & Vehicles</option><option>House & Home</option><option>Parenting</option><option>Medical</option><option>Sports</option><option>Beauty</option><option>Comics</option><option>Events</option>
                                     </optgroup>
-                                    <optgroup label="Games">
-                                        <option>Action</option><option>Adventure</option><option>Arcade</option><option>Board</option><option>Card</option><option>Casino</option><option>Casual</option><option>Educational</option><option>Music</option><option>Puzzle</option><option>Racing</option><option>Role Playing</option><option>Simulation</option><option>Sports (Game)</option><option>Strategy</option><option>Trivia</option><option>Word</option>
+                                    <optgroup label="🎮 Games">
+                                        <option>Action</option><option>Adventure</option><option>Arcade</option><option>Puzzle</option><option>Racing</option><option>Strategy</option><option>Role Playing</option><option>Simulation</option><option>Sports Games</option><option>Casual</option><option>Board</option><option>Card</option><option>Casino</option><option>Educational Games</option><option>Music Games</option><option>Trivia</option><option>Word Games</option>
                                     </optgroup>
                                 </select>
                             </div>
@@ -132,6 +146,81 @@
                 <ul id="adminAppList" class="divide-y divide-gray-100 max-h-[500px] overflow-y-auto"></ul>
             </div>
         </div>
+        
+        <!-- BANNERS TAB -->
+        <div id="bannersTab" class="tab-content hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm mb-8 border border-gray-100">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2"><i class="ph-bold ph-image text-green-600"></i> Manage Hero Slider</h2>
+                
+                <form id="bannerForm" class="grid grid-cols-1 md:grid-cols-2 gap-6" onsubmit="event.preventDefault(); saveBanner();">
+                    <div class="space-y-4">
+                        <div><label class="label">Banner Title</label><input type="text" id="bannerTitle" class="input-field" required></div>
+                        <div><label class="label">Description</label><input type="text" id="bannerDesc" class="input-field"></div>
+                        <div><label class="label">Order (Lower = First)</label><input type="number" id="bannerOrder" class="input-field" value="0" required></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div><label class="label">Image URL (1200x400 recommended)</label><input type="url" id="bannerImage" class="input-field" required></div>
+                        <div><label class="label">Link URL (where to navigate)</label><input type="text" id="bannerLink" class="input-field" placeholder="app-details.html?id=xxx or #"></div>
+                        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold shadow-lg hover:bg-green-700 transition">Save Banner</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="font-bold mb-4 text-gray-800 flex items-center gap-2"><i class="ph-bold ph-list-bullets"></i> Current Banners</h3>
+                <div id="bannerList" class="space-y-3"></div>
+            </div>
+        </div>
+        
+        <!-- SETTINGS TAB -->
+        <div id="settingsTab" class="tab-content hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2"><i class="ph-bold ph-gear text-green-600"></i> Site Configuration</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div><label class="label">Site Name</label><input type="text" id="siteName" class="input-field" placeholder="APKVerse" value="APKVerse"></div>
+                        <div><label class="label">Site Tagline</label><input type="text" id="siteTagline" class="input-field" placeholder="Your trusted Android APK destination"></div>
+                        <div>
+                            <label class="label">Logo Upload</label>
+                            <input type="file" id="logoUpload" accept="image/*" class="input-field" onchange="previewLogo(event)">
+                            <p class="text-[10px] text-gray-500 mt-1">Or enter logo URL below</p>
+                        </div>
+                        <div><label class="label">Logo URL</label><input type="url" id="logoUrl" class="input-field" placeholder="https://..." value="">
+                            <div id="logoPreview" class="mt-2 hidden">
+                                <img id="logoPreviewImg" class="w-16 h-16 rounded-lg border-2 border-gray-200 object-cover">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div><label class="label">Contact Email</label><input type="email" id="contactEmail" class="input-field" placeholder="support@apkverse.com"></div>
+                        <div><label class="label">DMCA Email</label><input type="email" id="dmcaEmail" class="input-field" placeholder="dmca@apkverse.com"></div>
+                        <div><label class="label">Business Email</label><input type="email" id="businessEmail" class="input-field" placeholder="business@apkverse.com"></div>
+                        <button onclick="saveSettings()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold shadow-lg hover:bg-green-700 transition">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200">
+                <h3 class="font-bold text-blue-900 mb-3 flex items-center gap-2"><i class="ph-fill ph-shield-check text-xl"></i> Security Status</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <div class="text-green-600 font-bold text-sm mb-1">Admin Access</div>
+                        <div class="text-xs text-gray-600">Firebase Auth Protected</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <div class="text-blue-600 font-bold text-sm mb-1">Database</div>
+                        <div class="text-xs text-gray-600">Firestore Secured</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <div class="text-purple-600 font-bold text-sm mb-1">Content</div>
+                        <div class="text-xs text-gray-600">Verified & Scanned</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        </div>
     </div>
 
     <style>
@@ -139,10 +228,66 @@
         .input-field:focus { border-color: #16a34a; box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1); }
         .label { font-size: 10px; font-weight: bold; color: #6b7280; margin-bottom: 2px; display: block; uppercase; letter-spacing: 0.5px; }
         .section-title { font-weight: bold; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; margin-bottom: 12px; font-size: 14px; }
+        .tab-btn { transition: all 0.3s; }
+        .tab-btn.active { color: #16a34a; border-color: #16a34a; }
     </style>
+
+    <script>
+        window.switchTab = (tab) => {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-green-600', 'border-green-600');
+                btn.classList.add('text-gray-500', 'border-transparent');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            
+            if(tab === 'apps') {
+                document.getElementById('tabApps').classList.add('active', 'text-green-600', 'border-green-600');
+                document.getElementById('tabApps').classList.remove('text-gray-500', 'border-transparent');
+                document.getElementById('appsTab').classList.remove('hidden');
+            } else if(tab === 'banners') {
+                document.getElementById('tabBanners').classList.add('active', 'text-green-600', 'border-green-600');
+                document.getElementById('tabBanners').classList.remove('text-gray-500', 'border-transparent');
+                document.getElementById('bannersTab').classList.remove('hidden');
+            } else if(tab === 'settings') {
+                document.getElementById('tabSettings').classList.add('active', 'text-green-600', 'border-green-600');
+                document.getElementById('tabSettings').classList.remove('text-gray-500', 'border-transparent');
+                document.getElementById('settingsTab').classList.remove('hidden');
+                loadSettings();
+            }
+        };
+        
+        window.previewLogo = (event) => {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('logoUrl').value = e.target.result;
+                    document.getElementById('logoPreviewImg').src = e.target.result;
+                    document.getElementById('logoPreview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+    </script>
 
     <script type="module">
         import { initAdmin } from './app.js';
+        
+        // Security check - verify access token
+        if(!sessionStorage.getItem('admin_access_token')) {
+            alert('Unauthorized access! Redirecting to secure portal...');
+            window.location.href = 'secure-admin-portal.html';
+        }
+        
+        // Token expiry check (24 hours)
+        const token = sessionStorage.getItem('admin_access_token');
+        const tokenAge = Date.now() - parseInt(token);
+        if(tokenAge > 24 * 60 * 60 * 1000) {
+            sessionStorage.removeItem('admin_access_token');
+            alert('Session expired. Please login again.');
+            window.location.href = 'secure-admin-portal.html';
+        }
+        
         document.addEventListener('DOMContentLoaded', initAdmin);
     </script>
 </body>
