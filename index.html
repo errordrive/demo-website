@@ -7,26 +7,47 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
+        * { scroll-behavior: smooth; }
         .no-scrollbar::-webkit-scrollbar { display: none; } 
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .submenu.open { max-height: 500px; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+        .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 1000px 100%; animation: shimmer 2s infinite; }
+        .slide-item { cursor: pointer; transition: transform 0.3s ease; }
+        .slide-item:hover { transform: scale(1.02); }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
 
-    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
             <div class="flex items-center gap-4">
-                <button onclick="toggleMenu()" class="text-gray-600 hover:text-green-600 transition text-2xl">
+                <button onclick="toggleMenu()" class="text-gray-600 hover:text-green-600 transition text-2xl hover:scale-110 transform">
                     <i class="ph-bold ph-list"></i>
                 </button>
-                <a href="index.html" class="flex items-center gap-2 cursor-pointer select-none">
-                    <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-xl shadow-lg"><i class="ph-fill ph-android-logo"></i></div>
-                    <span class="text-lg font-bold tracking-tight">APK<span class="text-green-600">Verse</span></span>
+                <a href="index.html" class="flex items-center gap-2 cursor-pointer select-none group">
+                    <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-xl shadow-lg group-hover:scale-110 transition-transform"><i class="ph-fill ph-android-logo"></i></div>
+                    <span class="text-lg font-bold tracking-tight hidden md:block">APK<span class="text-green-600">Verse</span></span>
                 </a>
             </div>
-            <a href="admin.html" class="text-[10px] font-bold text-gray-500 hover:text-green-600 uppercase tracking-widest border border-gray-200 px-3 py-1 rounded-full transition">Admin</a>
+            <div class="flex-1 max-w-xl mx-4 hidden md:block">
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Search apps, games, developers..." 
+                        class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition text-sm">
+                    <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Search -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative">
+                <input type="text" id="searchInputMobile" placeholder="Search apps, games, developers..." 
+                    class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition text-sm">
+                <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            </div>
         </div>
     </nav>
 
@@ -48,10 +69,16 @@
                     <i id="icon-appsSub" class="ph-bold ph-caret-down transition-transform duration-300 group-hover:text-green-600"></i>
                 </button>
                 <div id="appsSub" class="submenu pl-11 space-y-1">
+                    <button onclick="filterCategory('Communication'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Communication</button>
                     <button onclick="filterCategory('Social'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Social</button>
+                    <button onclick="filterCategory('Messaging'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Messaging</button>
+                    <button onclick="filterCategory('Photography'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Photography</button>
+                    <button onclick="filterCategory('Video Players'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Video Players</button>
+                    <button onclick="filterCategory('Music & Audio'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Music & Audio</button>
                     <button onclick="filterCategory('Tools'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Tools</button>
                     <button onclick="filterCategory('Productivity'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Productivity</button>
-                    <button onclick="filterCategory('Communication'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Communication</button>
+                    <button onclick="filterCategory('Shopping'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Shopping</button>
+                    <button onclick="filterCategory('Education'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Education</button>
                 </div>
             </div>
 
@@ -62,8 +89,15 @@
                 </button>
                 <div id="gamesSub" class="submenu pl-11 space-y-1">
                     <button onclick="filterCategory('Action'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Action</button>
+                    <button onclick="filterCategory('Adventure'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Adventure</button>
                     <button onclick="filterCategory('Arcade'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Arcade</button>
+                    <button onclick="filterCategory('Puzzle'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Puzzle</button>
                     <button onclick="filterCategory('Racing'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Racing</button>
+                    <button onclick="filterCategory('Strategy'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Strategy</button>
+                    <button onclick="filterCategory('Role Playing'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Role Playing</button>
+                    <button onclick="filterCategory('Simulation'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Simulation</button>
+                    <button onclick="filterCategory('Sports Games'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Sports</button>
+                    <button onclick="filterCategory('Casual'); toggleMenu()" class="w-full text-left py-2 text-sm text-gray-500 hover:text-green-600">Casual</button>
                 </div>
             </div>
 
@@ -98,24 +132,34 @@
         </div>
     </div>
 
-    <div class="bg-gray-900 text-white py-10 px-4 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-green-500 rounded-full blur-[100px] opacity-20"></div>
-        <div class="max-w-2xl mx-auto text-center relative z-10">
-            <h1 class="text-3xl font-bold mb-4">Discover & Download</h1>
-            <div class="relative w-full">
-                <input type="text" id="searchInput" placeholder="Search for apps..." 
-                    class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm">
-                <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+    <!-- Hero Slider -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+        <div id="heroSlider" class="relative h-[300px] md:h-[400px]">
+            <div class="flex transition-transform duration-700 ease-out h-full" id="sliderTrack">
+                <!-- Slides loaded dynamically -->
             </div>
+            <!-- Navigation Arrows -->
+            <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition z-10 group">
+                <i class="ph-bold ph-caret-left text-xl group-hover:scale-125 transition-transform"></i>
+            </button>
+            <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition z-10 group">
+                <i class="ph-bold ph-caret-right text-xl group-hover:scale-125 transition-transform"></i>
+            </button>
+            <!-- Dots Indicator -->
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10" id="sliderDots"></div>
         </div>
     </div>
 
     <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
         <div class="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar" id="categoryList">
             <button onclick="filterCategory('All')" class="cat-btn active bg-green-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md whitespace-nowrap">All</button>
-            <button onclick="filterCategory('Games')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Games</button>
+            <button onclick="filterCategory('Communication')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Communication</button>
             <button onclick="filterCategory('Social')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Social</button>
+            <button onclick="filterCategory('Photography')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Photography</button>
             <button onclick="filterCategory('Tools')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Tools</button>
+            <button onclick="filterCategory('Action')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Action</button>
+            <button onclick="filterCategory('Puzzle')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Puzzle</button>
+            <button onclick="filterCategory('Racing')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap">Racing</button>
         </div>
 
         <div id="loading" class="text-center py-20 hidden"><i class="ph ph-spinner animate-spin text-green-600 text-3xl"></i></div>
@@ -152,15 +196,27 @@
     <footer id="main-footer"></footer>
 
     <script type="module">
-        import { loadApps } from './app.js';
+        import { loadApps, loadHeroSlider } from './app.js';
         let currentCat = 'All';
-        // loadApps() is now handled by app.js global init, but keeping this just in case
-        // Logic handled in app.js listener
+        
+        // Initialize slider
+        loadHeroSlider();
 
+        // Sync both search inputs
         let timeout = null;
-        document.getElementById('searchInput').addEventListener('input', (e) => {
+        const handleSearch = (value) => {
             clearTimeout(timeout);
-            timeout = setTimeout(() => loadApps(currentCat, e.target.value), 300);
+            timeout = setTimeout(() => loadApps(currentCat, value), 300);
+        };
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            document.getElementById('searchInputMobile').value = e.target.value;
+            handleSearch(e.target.value);
+        });
+        
+        document.getElementById('searchInputMobile').addEventListener('input', (e) => {
+            document.getElementById('searchInput').value = e.target.value;
+            handleSearch(e.target.value);
         });
 
         window.toggleMenu = () => {
@@ -187,8 +243,8 @@
         window.filterCategory = (cat) => {
             currentCat = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = "cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap";
-                if(btn.innerText === cat) btn.className = "cat-btn bg-green-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md whitespace-nowrap";
+                btn.className = "cat-btn bg-white text-gray-600 border border-gray-200 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all hover:scale-105";
+                if(btn.innerText === cat) btn.className = "cat-btn bg-green-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md whitespace-nowrap transition-all";
             });
             loadApps(cat, document.getElementById('searchInput').value);
         }
